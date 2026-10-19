@@ -1,20 +1,22 @@
+import React from 'react';
+
 export default function Philosophy() {
   return (
     <section className="intro section-pad" id="philosophy">
-      <div className="section-label"><span>01 / OUR PHILOSOPHY</span><span>BEYOND THE EXPECTED</span></div>
+      <div className="section-label"><span>01 / A BETTER STARTING POINT</span><span>THE DETAILS, MADE CLEAR</span></div>
       <div className="intro-grid">
-        <p className="intro-kicker">The right car<br />changes <em>everything.</em></p>
+        <p className="intro-kicker">Good decisions<br />start with <em>clarity.</em></p>
         <div className="intro-copy">
-          <p>Some things are better felt than explained. The quiet confidence of a perfectly judged line. The first turn of a key. A road that opens up just for you.</p>
-          <p>We bring together remarkable machines and the people who understand them. No noise. No pressure. Just a little more meaning in every mile.</p>
-          <a className="text-link" href="#experience">A different kind of dealership <span>↗</span></a>
+          <p>Buying a car means balancing a lot: space, running costs, safety, and the price you will actually pay.</p>
+          <p>We bring the useful details together so you can compare at your own pace, then speak with a dealer when you are ready.</p>
+          <a className="text-link" href="#experience">See how we can help <span>↗</span></a>
         </div>
       </div>
       <div className="intro-stat-row">
-        <div><b>01</b><span>PERSONAL, ALWAYS</span></div>
-        <div><b>32</b><span>EXCEPTIONAL CARS</span></div>
-        <div><b>∞</b><span>WAYS TO GET THERE</span></div>
-        <div className="stat-quote">“The journey should feel like yours<br />before the engine even starts.”</div>
+        <div><b>01</b><span>COMPARE MODELS</span></div>
+        <div><b>02</b><span>CHECK THE DETAILS</span></div>
+        <div><b>03</b><span>CONTACT A DEALER</span></div>
+        <div className="stat-quote">“A little more clarity makes<br />the choice feel like yours.”</div>
       </div>
     </section>
   );

@@ -1,4 +1,14 @@
-export default function Hero({ onPlayFilm }) {
+import React, { useState } from 'react';
+import { INDIAN_STATES } from '../services/api.js';
+
+export default function Hero({ userState, onStateChange, onOpenCompare, onOpenSearch, onOpenAdvisor }) {
+  const [quickSearch, setQuickSearch] = useState('');
+
+  function handleQuickSearchSubmit(e) {
+    e.preventDefault();
+    onOpenSearch(quickSearch);
+  }
+
   return (
     <section className="hero" id="home">
       <div className="hero-backdrop" />
@@ -13,20 +23,93 @@ export default function Hero({ onPlayFilm }) {
         <source src="https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_25fps.mp4" type="video/mp4" />
       </video>
       <div className="hero-scrim" />
+
       <div className="hero-content">
-        <div className="eyebrow hero-eyebrow"><span className="eyebrow-line" /> THE ART OF ARRIVAL <span className="eyebrow-line" /></div>
-        <h1>Made for the<br /><em>feeling.</em></h1>
-        <p className="hero-copy">A considered collection of exceptional automobiles.<br />Chosen for the way they make you feel.</p>
-        <div className="hero-actions">
-          <a className="button button-light" href="#collection">Explore the collection <span>↗</span></a>
-          <button className="play-film" type="button" onClick={onPlayFilm}>
-            <span className="play-icon">▶</span> Aurel in motion <span className="film-time">01:24</span>
+        <div className="eyebrow hero-eyebrow">
+          <span className="eyebrow-line" />
+          A MORE CONSIDERED WAY TO BUY
+          <span className="eyebrow-line" />
+        </div>
+
+        <h1>
+          Find the car<br />
+          that feels <em>right.</em>
+        </h1>
+
+        <p className="hero-copy">
+          Compare the details that matter, explore trusted listings, and get a clearer picture of what your next car will cost.
+        </p>
+
+        {/* In-page Interactive Quick Search Bar */}
+        <form className="hero-search-box" onSubmit={handleQuickSearchSubmit}>
+          <div className="hero-search-input-group">
+            <span className="hero-search-icon" aria-hidden="true">⌕</span>
+            <input
+              type="text"
+              className="hero-search-input"
+              placeholder="Try a model, brand or accessory"
+              value={quickSearch}
+              onChange={(e) => setQuickSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="hero-state-picker-group">
+            <span className="hero-pin" aria-hidden="true">IN</span>
+            <select
+              className="hero-state-select"
+              value={userState}
+              onChange={(e) => onStateChange(e.target.value)}
+              aria-label="Filter by state"
+            >
+              {INDIAN_STATES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+
+          <button type="submit" className="button button-gold hero-search-btn">
+            Search cars <span aria-hidden="true">↗</span>
           </button>
+        </form>
+
+        {/* Quick popular search tags */}
+        <div className="hero-quick-tags">
+          <span className="quick-tag-label">Popular searches</span>
+          {['SUVs', 'Electric cars', 'Family cars'].map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              className="quick-tag-pill"
+              onClick={() => onOpenSearch(tag)}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+
+        <div className="hero-actions">
+          <a href="#compare" className="button button-gold">
+              Compare cars
+          </a>
+          <a href="#accessories" className="button button-outline">
+            Browse accessories
+          </a>
+          <a href="#advisor" className="button button-light">
+            Talk to a specialist
+          </a>
         </div>
       </div>
-      <div className="hero-index"><span>01</span> / 03 <span className="index-rule" /> INDEPENDENT BY NATURE</div>
-      <div className="hero-side-note">A MORE PERSONAL KIND OF MOTORING <span>↓</span></div>
-      <div className="hero-bottom"><span>EST. MMXVI · LONDON</span><span>51°30'26.4&quot;N &nbsp; 0°07'39.0&quot;W</span></div>
+
+      <div className="hero-index">
+        <span>MADE FOR INDIA</span><span className="index-rule" /> CLEAR PRICES · USEFUL DETAILS
+      </div>
+      <div className="hero-side-note">
+        EXPLORE THE COLLECTION <span>↓</span>
+      </div>
+      <div className="hero-bottom">
+        <span>EST. INDIA · BENGALURU · MUMBAI · DELHI</span>
+        <span>100% INDIAN SPECIFICATIONS &amp; INR PRICING</span>
+      </div>
     </section>
   );
 }

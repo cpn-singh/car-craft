@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { INDIAN_STATES } from '../services/api.js';
 
-const navigationLinks = [
-  { label: 'Collection', href: '#collection' },
-  { label: 'Our philosophy', href: '#philosophy' },
-  { label: 'Experience', href: '#experience' },
-];
-
-export default function Navigation() {
+export default function Navigation({
+  userState,
+  onStateChange,
+  onOpenModal,
+  onOpenCompare,
+  onOpenSearch,
+  onOpenAdvisor,
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function closeMenu() {
@@ -15,25 +17,72 @@ export default function Navigation() {
 
   return (
     <header className="nav-wrap">
-      <a className="brand" href="#home" aria-label="Aurel home">
-        <span className="brand-mark">A</span>
-        <span className="brand-name">AUREL<span className="brand-sub">MOTOR ATELIER</span></span>
-      </a>
+      <div className="brand-group">
+        <a className="brand" href="#home" aria-label="Aurel home">
+          <span className="brand-mark">A</span>
+          <span className="brand-name">
+          AUREL<span className="brand-sub">INDIA</span>
+          </span>
+        </a>
+
+        <div className="nav-state-picker">
+          <span className="location-pin" aria-hidden="true">IN</span>
+          <select
+            className="state-dropdown"
+            value={userState}
+            onChange={(e) => onStateChange(e.target.value)}
+            title="Filter prices and dealers by state"
+          >
+            {INDIAN_STATES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <nav className={`nav-links ${isMenuOpen ? 'open' : ''}`} aria-label="Main navigation">
-        {navigationLinks.map((link) => (
-          <a href={link.href} key={link.label} onClick={closeMenu}>{link.label}</a>
-        ))}
+        <a href="#collection" onClick={closeMenu}>Cars</a>
+        <a href="#compare" className="highlight-gold" onClick={closeMenu}>Compare cars</a>
+        <a href="#accessories" onClick={closeMenu}>Parts &amp; accessories</a>
+        <a href="#advisor" className="highlight-gold" onClick={closeMenu}>Dealers</a>
+        <button
+          type="button"
+          className="nav-text-btn"
+          onClick={() => { closeMenu(); onOpenModal('service'); }}
+        >
+          Service
+        </button>
       </nav>
-      <a className="nav-cta" href="#contact">Arrange a visit <span>↗</span></a>
-      <button
-        className="menu-toggle"
-        type="button"
-        aria-label="Toggle navigation menu"
-        aria-expanded={isMenuOpen}
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-      >
-        <i /><i />
-      </button>
+
+      <div className="nav-right">
+        {/* Search button */}
+        <button
+          type="button"
+          className="nav-search-btn"
+          onClick={onOpenSearch}
+          title="Search cars, accessories and dealers across India"
+        >
+          <span aria-hidden="true">⌕</span> Search
+        </button>
+
+        <button
+          className="nav-cta"
+          type="button"
+          onClick={() => onOpenModal('inquiry')}
+        >
+          Talk to a dealer <span>↗</span>
+        </button>
+
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label="Toggle navigation menu"
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <i /><i />
+        </button>
+      </div>
     </header>
   );
 }
