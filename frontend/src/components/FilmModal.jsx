@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const filmUrl = 'https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_25fps.mp4';
+const filmUrl = '/videos/hero.mp4';
 
 export default function FilmModal({ isOpen, onClose }) {
   const videoRef = useRef(null);

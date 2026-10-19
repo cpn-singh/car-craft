@@ -152,8 +152,9 @@ export default function SearchModal({ isOpen, onClose, userState, initialQuery =
                             <div className="search-dealer-callout">
                               <span className="best-tag">🏆 CHEAPEST DEALER IN {selectedState.toUpperCase()}:</span>
                               <div className="dealer-name-line">
-                                <strong>{v.best_dealer_in_state.dealer_name}</strong>
-                                <span className="dealer-city">({v.best_dealer_in_state.city}) ★{v.best_dealer_in_state.rating}</span>
+                                <span className="dealer-name-strong">{v.best_dealer_in_state.dealer_name}</span>
+                                <span className="dealer-city-tag">({v.best_dealer_in_state.city})</span>
+                                <span className="dealer-star-pill">★ {v.best_dealer_in_state.rating}</span>
                               </div>
                               <div className="dealer-price-line">
                                 <span className="deal-price">{v.best_dealer_in_state.formatted_offer_price}</span>

@@ -11,9 +11,9 @@
 @layer components {
 :root {
   --ink:#11120f;
-  --paper:#eae8e1;
-  --muted:#8a8a82;
-  --line:rgba(234,232,225,.16);
+  --paper:#ffffff;
+  --muted:#dcdad2;
+  --line:rgba(234,232,225,.22);
   --accent:#c5a77a;
   --font:'Manrope',sans-serif
 }
@@ -2489,7 +2489,7 @@ h1 em,h2 em,.intro-kicker em {
 
 .hero-search-icon {
   font-size: 16px;
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .hero-search-input {
@@ -2502,7 +2502,7 @@ h1 em,h2 em,.intro-kicker em {
 }
 
 .hero-search-input::placeholder {
-  color: #888;
+  color: #c4c2ba;
 }
 
 .hero-state-picker-group {
@@ -3276,9 +3276,9 @@ h1 em,h2 em,.intro-kicker em {
 /* Aurel editorial refresh */
 :root {
   --ink: #171b17;
-  --paper: #f3f0e8;
-  --muted: #aaa99f;
-  --line: rgba(243, 240, 232, .16);
+  --paper: #ffffff;
+  --muted: #dedcd5;
+  --line: rgba(243, 240, 232, .22);
   --accent: #c67b53;
   --font: 'Manrope', sans-serif;
   color-scheme: dark;
@@ -3297,18 +3297,18 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   border-bottom-color: rgba(255,255,255,.2);
 }
 .brand-mark { color: var(--accent); border-color: rgba(198,123,83,.7); }
-.brand-name { letter-spacing: .18em; }
-.brand-sub { letter-spacing: .22em; }
-.nav-links { gap: clamp(16px, 2.5vw, 34px); font-size: 12px; }
+.brand-name { letter-spacing: .18em; color: #ffffff; }
+.brand-sub { letter-spacing: .22em; color: #e2dfd7; }
+.nav-links { gap: clamp(16px, 2.5vw, 34px); font-size: 12px; color: #ffffff; }
 .nav-right { display: flex; align-items: center; gap: 20px; }
 .nav-search-btn, .nav-text-btn {
   border: 0; background: transparent; color: inherit; cursor: pointer; font: inherit;
 }
-.nav-search-btn { font-size: 12px; color: #d4d1c9; }
+.nav-search-btn { font-size: 12px; color: #ffffff; }
 .nav-search-btn span { font-size: 18px; margin-right: 5px; }
-.nav-cta { border-bottom: 1px solid var(--accent); padding-bottom: 5px; }
+.nav-cta { border-bottom: 1px solid var(--accent); padding-bottom: 5px; color: #ffffff; }
 .nav-cta span, .text-link span { color: var(--accent); }
-.nav-state-picker { border-color: rgba(255,255,255,.2); }
+.nav-state-picker { border-color: rgba(255,255,255,.2); color: #ffffff; }
 .location-pin { color: var(--accent); font-size: 9px; letter-spacing: .08em; }
 
 .hero { min-height: 700px; height: min(850px, 100svh); padding: 120px 9% 70px; }
@@ -3319,82 +3319,82 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
     linear-gradient(0deg, rgba(12,15,12,.78), transparent 40%, rgba(12,15,12,.14));
 }
 .hero-content { max-width: 900px; margin-top: 8px; }
-.hero-eyebrow { letter-spacing: .18em; color: #e0dcd2; }
-h1 { font-size: clamp(60px, 8.3vw, 116px); line-height: .98; letter-spacing: -.07em; margin: 24px 0 20px; }
+.hero-eyebrow { letter-spacing: .18em; color: #ffffff; }
+h1 { font-size: clamp(60px, 8.3vw, 116px); line-height: .98; letter-spacing: -.07em; margin: 24px 0 20px; color: #ffffff; }
 h1 em, h2 em, .intro-kicker em { color: #d08a62; }
-.hero-copy { max-width: 510px; font-size: 15px; line-height: 1.75; color: #e1ded6; }
+.hero-copy { max-width: 510px; font-size: 15px; line-height: 1.75; color: #ffffff; }
 .hero-search-box {
   max-width: 740px; margin-top: 28px; padding: 7px; gap: 7px;
   background: rgba(24,28,23,.92); border: 1px solid rgba(243,240,232,.24);
   border-radius: 3px; box-shadow: 0 18px 50px rgba(0,0,0,.24);
 }
-.hero-search-input { min-height: 43px; font-size: 14px; }
-.hero-search-input::placeholder { color: #aaa99f; }
+.hero-search-input { min-height: 43px; font-size: 14px; color: #ffffff; }
+.hero-search-input::placeholder { color: #c4c2ba; }
 .hero-state-picker-group { border: 0; border-left: 1px solid rgba(255,255,255,.16); border-radius: 0; }
 .hero-pin { color: var(--accent); font-size: 9px; letter-spacing: .08em; }
 .button-gold, .button-gold-sm { background: var(--accent); color: #171b17; border-color: var(--accent); }
 .button-gold:hover, .button-gold-sm:hover { background: #d48a60; }
 .hero-quick-tags { margin: 12px 0 0; gap: 8px; }
-.quick-tag-label { font-size: 11px; color: #c5c2b9; margin-right: 4px; }
-.quick-tag-pill { border-radius: 2px; padding: 6px 10px; }
+.quick-tag-label { font-size: 11px; color: #ffffff; margin-right: 4px; }
+.quick-tag-pill { border-radius: 2px; padding: 6px 10px; color: #ffffff; }
 .hero-actions { gap: 12px; margin-top: 24px; }
 .hero-actions .button { min-height: 42px; padding-inline: 15px; gap: 12px; }
-.hero-index { top: auto; bottom: 75px; right: 9%; font-size: 9px; }
+.hero-index { top: auto; bottom: 75px; right: 9%; font-size: 9px; color: #ffffff; }
 .hero-side-note { display: none; }
-.hero-bottom { left: 9%; right: 9%; }
+.hero-bottom { left: 9%; right: 9%; color: #ffffff; }
 
 .section-pad { padding-left: 9%; padding-right: 9%; }
 .intro { padding-top: 104px; padding-bottom: 98px; }
 .intro-grid { grid-template-columns: 1.05fr .75fr; gap: 8%; padding-top: 42px; }
-.intro-kicker { font-size: clamp(42px, 5vw, 68px); }
-.intro-copy { color: #c0beb5; font-size: 14px; line-height: 1.8; }
+.intro-kicker { font-size: clamp(42px, 5vw, 68px); color: #ffffff; }
+.intro-copy { color: #f3f1ea; font-size: 14px; line-height: 1.8; }
 .intro-stat-row { margin-top: 58px; grid-template-columns: 1fr 1fr 1fr 1.25fr; }
-.intro-stat-row b { font-size: 28px; }
-.intro-stat-row span { font-size: 9px; letter-spacing: .11em; }
-.stat-quote { color: #d08a62; }
+.intro-stat-row b { font-size: 28px; color: #ffffff; }
+.intro-stat-row span { font-size: 9px; letter-spacing: .11em; color: #e2e0d8; }
+.stat-quote { color: #deb196; }
 
-.collection { background: #eeeae1; color: #20251f; padding-top: 78px; padding-bottom: 92px; }
-.collection .section-label { border-color: rgba(32,37,31,.19); }
-.collection-heading h2, .experience h2, .closing h2 { font-size: clamp(44px, 5.5vw, 72px); letter-spacing: -.06em; }
+.collection { background: #eeeae1; color: #111411; padding-top: 78px; padding-bottom: 92px; }
+.collection .section-label { border-color: rgba(32,37,31,.25); color: #111411; font-weight: 600; }
+.collection-heading h2, .experience h2, .closing h2 { font-size: clamp(44px, 5.5vw, 72px); letter-spacing: -.06em; color: inherit; }
 .collection-heading h2 em { color: #a85d3a; }
-.collection-heading p { max-width: 590px; color: #62655d; font-size: 14px; line-height: 1.65; }
-.filters { gap: 24px; margin: 34px 0 24px; border-color: rgba(32,37,31,.2); }
-.filter { font-size: 12px; padding-bottom: 12px; color: #686a63; }
-.filter.active { border-color: #a85d3a; }
+.collection-heading p { max-width: 590px; color: #171b17; font-size: 14px; line-height: 1.65; font-weight: 500; }
+.filters { gap: 24px; margin: 34px 0 24px; border-color: rgba(32,37,31,.25); }
+.filter { font-size: 12px; padding-bottom: 12px; color: #1a1e1a; font-weight: 500; }
+.filter.active { border-color: #a85d3a; color: #0d100d; font-weight: 700; }
 .car-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 34px 22px; }
-.car-card { color: #20251f; }
+.car-card { color: #111411; }
 .car-image-wrap { aspect-ratio: 1.48; background: #d9d5cb; }
 .car-image-wrap:focus-visible { outline-color: #a85d3a; }
-.car-arrow { opacity: 1; transform: none; width: 32px; height: 32px; background: rgba(20,24,20,.48); }
+.car-arrow { opacity: 1; transform: none; width: 32px; height: 32px; background: rgba(20,24,20,.6); color: #ffffff; }
 .car-meta { align-items: start; padding-top: 14px; }
-.car-type { font-size: 9px; color: #73756d; }
-.car-meta h3 { font-size: 17px; }
-.car-price { font-size: 13px; font-weight: 600; }
-.car-spec { font-size: 10px; color: #696c63; }
+.car-type { font-size: 9px; color: #242a24; font-weight: 600; }
+.car-meta h3 { font-size: 17px; color: #111411; font-weight: 700; }
+.car-price { font-size: 13px; font-weight: 700; color: #111411; }
+.car-spec { font-size: 10px; color: #242a24; font-weight: 500; }
 .button-gold-sm, .button-outline-sm { border-radius: 2px; }
 
 .compare-section, .parts-section, .advisor-section { padding-top: 82px; padding-bottom: 86px; }
-.compare-section { background: #1d221d; }
-.parts-section { background: #171b17; }
-.advisor-section { background: #1d221d; }
-.compare-section-header h2, .parts-section-header h2, .advisor-section-header h2 { font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -.055em; }
-.compare-section-header p, .parts-section-header p, .advisor-section-header p { font-size: 14px; line-height: 1.7; color: #b8b9b0; }
+.compare-section { background: #1d221d; color: #ffffff; }
+.parts-section { background: #171b17; color: #ffffff; }
+.advisor-section { background: #1d221d; color: #ffffff; }
+.compare-section-header h2, .parts-section-header h2, .advisor-section-header h2 { font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -.055em; color: #ffffff; }
+.compare-section-header p, .parts-section-header p, .advisor-section-header p { font-size: 14px; line-height: 1.7; color: #f3f1eb; }
 .state-picker-wrap, .car-selectors-row, .advisor-inline-container { border-radius: 2px; }
 .parts-showcase-grid { grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 18px; }
-.part-showcase-card, .dealer-card-full, .dealer-full-card { border-radius: 2px; border-color: rgba(243,240,232,.14); }
+.part-showcase-card, .dealer-card-full, .dealer-full-card { border-radius: 2px; border-color: rgba(243,240,232,.18); color: #ffffff; }
 .part-showcase-card { background: #1c211c; }
 .part-showcase-img { height: 205px; }
-.advisor-inline-container { background: rgba(255,255,255,.025); }
+.advisor-inline-container { background: rgba(255,255,255,.03); color: #ffffff; }
 
-.experience { background: #20251f; }
+.experience { background: #20251f; color: #ffffff; }
 .experience-copy { padding: 72px 12% 56px; }
-.experience-copy>p { font-size: 14px; line-height: 1.75; color: #c1c1b8; }
+.experience-copy>p { font-size: 14px; line-height: 1.75; color: #f5f4ed; }
 .button-outline { border-radius: 2px; }
-.closing { background: #d1a17f; }
+.closing { background: #d1a17f; color: #191a16; }
 .closing h2 em { color: #59402f; }
 .closing-mark { color: rgba(255,255,255,.1); }
-.footer { padding-inline: 5.5%; color: #aaa99f; }
-.footer>span, .back-top { font-size: 9px; letter-spacing: .08em; }
+.footer { padding-inline: 5.5%; color: #ffffff; }
+.footer>span, .back-top { font-size: 9px; letter-spacing: .08em; color: #e2e0d8; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -3450,11 +3450,11 @@ html { scroll-padding-top: 92px; }
 .part-showcase-img { height: 210px; background: #252b25; }
 .part-showcase-body { padding: 18px; }
 .part-showcase-body h4 { font-size: 17px; font-weight: 500; }
-.part-compat-note { min-height: 2.8em; font-size: 12px; line-height: 1.55; }
+.part-compat-note { min-height: 2.8em; font-size: 12px; line-height: 1.55; color: #e2e0d8; }
 .parts-section-header { align-items: end; }
 .parts-filter-pills { justify-content: flex-end; }
-.filter-pill { border-radius: 2px; padding: 9px 13px; }
-.filter-pill span { color: inherit; opacity: .72; }
+.filter-pill { border-radius: 2px; padding: 9px 13px; color: #ffffff; }
+.filter-pill span { color: inherit; opacity: 1; font-weight: 600; }
 .cheapest-part-dealer, .price-and-dealer-block { border-radius: 2px; }
 .cheapest-part-dealer { background: rgba(198, 123, 83, .06); border-color: rgba(198, 123, 83, .24); }
 .deal-title { color: #d08a62; }
@@ -3463,25 +3463,25 @@ html { scroll-padding-top: 92px; }
 .part-order-btn { min-height: 44px; }
 .api-badge { color: #a85d3a; }
 .card-dealer-badge { background: rgba(168, 93, 58, .07); border-color: rgba(168, 93, 58, .28); border-radius: 2px; }
-.badge-title { color: #8f4e31; }
-.badge-price { color: #20251f; }
+.badge-title { color: #8f4e31; font-weight: 600; }
+.badge-price { color: #111411; font-weight: 700; }
 .save-pill { background: rgba(168, 93, 58, .12); color: #8f4e31; }
 
 .compare-section-header { align-items: end; }
 .compare-section-header h2 em, .parts-section-header h2 em, .advisor-section-header h2 em { color: #d08a62; }
 .ai-verdict-banner-inline { background: rgba(198, 123, 83, .055); border-color: rgba(198, 123, 83, .27); border-radius: 2px; }
-.ai-verdict-banner-inline h3 { font-family: var(--font); font-size: 20px; font-weight: 500; }
+.ai-verdict-banner-inline h3 { font-family: var(--font); font-size: 20px; font-weight: 500; color: #ffffff; }
 .verdict-tag { color: #d08a62; }
 .inline-deal-highlight { background: rgba(198, 123, 83, .07); border-color: rgba(198, 123, 83, .27); border-radius: 2px; }
 .green-txt, .offer-val, .offer-discount { color: #d08a62; }
 .savings-badge { background: #d08a62; }
 .comparison-table { min-width: 760px; }
-.comparison-table th, .comparison-table td { padding: 18px 16px; }
-.comparison-table .feature-label { width: 190px; min-width: 190px; color: #dfddd5; font-weight: 500; }
+.comparison-table th, .comparison-table td { padding: 18px 16px; color: #ffffff; }
+.comparison-table .feature-label { width: 190px; min-width: 190px; color: #ffffff; font-weight: 600; }
 .table-car-img { height: 210px; object-fit: contain; object-position: center; background: #171b17; }
 .feature-label strong, .feature-sub { display: block; }
-.feature-label strong { line-height: 1.45; }
-.feature-sub { margin-top: 6px; color: #aaa99f; font-size: 10px; font-weight: 400; line-height: 1.5; }
+.feature-label strong { line-height: 1.45; color: #ffffff; }
+.feature-sub { margin-top: 6px; color: #dedbd2; font-size: 10px; font-weight: 500; line-height: 1.5; }
 .highlight-row { background: rgba(198, 123, 83, .045); }
 .best-dealer-cell { background: rgba(198, 123, 83, .04); border-color: rgba(198, 123, 83, .2); }
 .dealer-card-compact .button-gold-sm { min-height: 38px; margin-top: 6px; }
@@ -4720,4 +4720,270 @@ html { scroll-padding-top: 92px; }
   font-size: 10px;
   color: #34d399;
 }
+
+/* --------------------------------------------------------------------------
+   Global Text Opacity & Maximum Legibility Enhancement
+   Ensures all headings, paragraphs, labels, metadata, specs, captions,
+   inputs, tables, and modal contents are rendered with full 100% opacity
+   and optimal high-contrast clarity across all themes and viewports.
+   -------------------------------------------------------------------------- */
+p, span, h1, h2, h3, h4, h5, h6, a, button, label, input, select, textarea,
+.hero-copy, .intro-copy, .section-label, .eyebrow, .car-type, .car-spec,
+.collection-heading p, .experience-copy>p, .stat-quote, .image-caption,
+.feature-sub, .deal-title, .part-compat-note, .dealer-info, .ex-showroom-sub,
+.brand-name, .brand-sub, .nav-links a, .nav-search-btn, .nav-text-btn,
+.footer, .footer>span, .back-top, .drawer-state-label, .form-group label {
+  opacity: 1 !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Enhanced high-contrast text on dark backgrounds */
+.hero-eyebrow,
+.hero-copy,
+.hero-index,
+.hero-bottom,
+.intro-copy,
+.intro-stat-row span,
+.compare-section-header p,
+.parts-section-header p,
+.advisor-section-header p,
+.experience-copy > p,
+.experience-note,
+.comparison-table .feature-label,
+.comparison-table th,
+.comparison-table td,
+.dealer-addr,
+.dealer-timing,
+.filter-pill,
+.part-showcase-desc,
+.advisor-msg,
+.search-hint {
+  color: #f7f6f2 !important;
+  opacity: 1 !important;
+}
+
+.intro-stat-row b,
+.hero-content h1,
+.intro-kicker,
+.compare-section-header h2,
+.parts-section-header h2,
+.advisor-section-header h2,
+.experience h2,
+.nav-links a,
+.nav-search-btn,
+.nav-cta,
+.modal-header h3,
+.brand-name {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Secondary helper / tag texts on dark sections */
+.feature-sub,
+.part-compat-note,
+.quick-tag-label,
+.footer > span,
+.back-top,
+.image-caption span,
+.hero-search-input::placeholder,
+.form-help {
+  color: #dedbd2 !important;
+  opacity: 1 !important;
+}
+
+/* High contrast on light collection background */
+.collection,
+.collection .section-label,
+.collection-heading h2,
+.collection-heading p,
+.collection .car-card,
+.collection .car-meta h3,
+.collection .car-price,
+.collection .car-type,
+.collection .car-spec,
+.collection .filter,
+.collection .filter span {
+  opacity: 1 !important;
+}
+
+.collection .section-label,
+.collection-heading h2,
+.collection-heading p,
+.collection .car-meta h3,
+.collection .car-price {
+  color: #0f120f !important;
+}
+
+.collection .car-type,
+.collection .car-spec,
+.collection .filter {
+  color: #242923 !important;
+  font-weight: 500;
+}
+
+.collection .filter.active {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   High-Visibility Dealer Badges & Ratings (e.g. Shaman Wheels & Auto Atelier (Mumbai) ★4.7)
+   -------------------------------------------------------------------------- */
+.card-dealer-badge {
+  background: #ffffff !important;
+  border: 1.5px solid rgba(198, 123, 83, 0.45) !important;
+  border-radius: 4px !important;
+  padding: 10px 14px !important;
+  margin: 12px 0 14px 0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+}
+
+.badge-title {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #944927 !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 6px !important;
+  text-transform: uppercase !important;
+}
+
+.badge-price {
+  font-size: 14.5px !important;
+  font-weight: 800 !important;
+  color: #111411 !important;
+}
+
+.badge-dealer {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #111411 !important;
+  line-height: 1.4 !important;
+}
+
+.badge-dealer > span {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #111411 !important;
+}
+
+.dealer-callout-info {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #111411 !important;
+}
+
+.dealer-name-strong,
+.badge-dealer strong,
+.dealer-header-mini .dealer-name {
+  font-weight: 800 !important;
+  font-size: 13px !important;
+  color: #0f120f !important;
+  letter-spacing: -0.01em !important;
+}
+
+.dealer-city-tag,
+.badge-dealer .dealer-city,
+.search-dealer-callout .dealer-city {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
+}
+
+.dealer-star-pill,
+.dealer-rating,
+.d-rating-badge,
+.rating-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  background: #fef3c7 !important;
+  color: #854d0e !important;
+  border: 1px solid #fcd34d !important;
+  font-size: 11.5px !important;
+  font-weight: 800 !important;
+  padding: 2px 7px !important;
+  border-radius: 4px !important;
+  letter-spacing: 0.02em !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.save-pill,
+.save-tag {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  border: 1px solid #86efac !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  padding: 3px 8px !important;
+  border-radius: 3px !important;
+  letter-spacing: 0.02em !important;
+  white-space: nowrap !important;
+}
+
+/* Search Modal Dealer Callout Enhanced Visibility */
+.search-dealer-callout {
+  background: rgba(24, 28, 23, 0.95) !important;
+  border: 1px solid rgba(198, 123, 83, 0.4) !important;
+  border-radius: 4px !important;
+  padding: 12px 14px !important;
+  margin: 10px 0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+}
+
+.search-dealer-callout .dealer-name-line {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+  margin: 4px 0 !important;
+}
+
+.search-dealer-callout .dealer-name-strong {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+
+.search-dealer-callout .dealer-city-tag {
+  color: #d1d5db !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+}
+
+/* Compare Section & Modal Dealer Header */
+.dealer-card-compact {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(198, 123, 83, 0.35) !important;
+  border-radius: 4px !important;
+  padding: 14px !important;
+}
+
+.dealer-header-mini {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.dealer-header-mini .dealer-name {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 13.5px !important;
+}
+}
+

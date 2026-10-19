@@ -20,7 +20,7 @@ export default function Hero({ userState, onStateChange, onOpenCompare, onOpenSe
         playsInline
         poster="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2200&q=90"
       >
-        <source src="https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_25fps.mp4" type="video/mp4" />
+        <source src="/videos/hero.mp4" type="video/mp4" />
       </video>
       <div className="hero-scrim" />
 

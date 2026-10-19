@@ -63,7 +63,11 @@ function VehicleCard({ car, onInquire, onCompare }) {
             <strong className="badge-price">{bestOffer.formatted_offer_price}</strong>
           </div>
           <div className="badge-dealer">
-            <span>{bestOffer.dealer.name} ({bestOffer.dealer.city}) ★{bestOffer.dealer.rating}</span>
+            <div className="dealer-callout-info">
+              <span className="dealer-name-strong">{bestOffer.dealer.name}</span>
+              <span className="dealer-city-tag">({bestOffer.dealer.city})</span>
+              <span className="dealer-star-pill">★ {bestOffer.dealer.rating}</span>
+            </div>
             {bestOffer.dealer_discount > 0 && (
               <span className="save-pill">Save ₹{Number(bestOffer.dealer_discount).toLocaleString()}</span>
             )}
