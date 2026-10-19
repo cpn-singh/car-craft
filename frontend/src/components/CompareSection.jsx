@@ -49,7 +49,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
   const activeCars = selectedIds.map((id) => indianCars.find((c) => c.id === id) || indianCars[0]);
 
   return (
-    <section className="section-pad compare-section bg-[#1d221d] px-[9%] py-[82px] max-[700px]:px-[22px] max-[700px]:py-[62px]" id="compare">
+    <section className="section-pad compare-section" id="compare">
       <div className="section-label">
         <span>03 / SIDE-BY-SIDE COMPARISON</span>
           <span>LOCAL PRICES · {userState.toUpperCase()}</span>
@@ -132,6 +132,11 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
           </div>
         )}
 
+        {/* Scroll indicator for mobile/tablet */}
+        <div className="table-scroll-hint" aria-hidden="true">
+          <span>⟵ Swipe horizontally to compare cars &amp; dealers ⟶</span>
+        </div>
+
         {/* Side by side comparison table */}
         <div className="table-responsive">
           <table className="comparison-table inpage-table">
@@ -160,9 +165,12 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
             <tbody>
               {/* CHEAPEST DEALER IN STATE */}
               <tr className="highlight-row">
-                <td className="feature-label">
-                  <strong>Dealer offer in {userState}</strong>
-                  <span className="feature-sub">Listed price and contact details</span>
+                <td className="feature-label feature-label-dealer">
+                  <div className="feature-label-inner">
+                    <span className="dealer-trophy">🏆</span>
+                    <strong>Best Dealer</strong>
+                    <span className="feature-sub">Offer in {userState}</span>
+                  </div>
                 </td>
                 {activeCars.map((car, idx) => {
                   const compItem = comparison?.comparison?.[idx];
@@ -173,7 +181,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
                   const onRoad = compItem?.best_dealer?.formatted_on_road || car.best_dealer_offer?.formatted_on_road;
 
                   return (
-                    <td key={car.id} className="best-dealer-cell">
+                    <td key={car.id} className="vehicle-col best-dealer-cell">
                       {bestD ? (
                         <div className="dealer-card-compact">
                           <div className="dealer-header-mini">
@@ -195,7 +203,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
                           </div>
                           {onRoad && (
                             <div className="on-road-est">
-                              Est. On-Road in {bestD.state || userState}: <strong>{onRoad}</strong>
+                              <span>Est. On-Road:</span> <strong>{onRoad}</strong>
                             </div>
                           )}
                           {perks && <div className="special-perk">🎁 {perks}</div>}
@@ -218,7 +226,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
               <tr>
                 <td className="feature-label">ARAI Mileage / Range</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id}>
+                  <td key={car.id} className="vehicle-col">
                     <span className="stat-pill">{comparison?.comparison?.[idx]?.vehicle?.mileage_arai || car.mileage_arai}</span>
                   </td>
                 ))}
@@ -227,7 +235,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
               <tr>
                 <td className="feature-label">Safety Credential</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id}>
+                  <td key={car.id} className="vehicle-col">
                     <span className="safety-badge">🛡️ {comparison?.comparison?.[idx]?.vehicle?.safety_rating || car.safety_rating}</span>
                   </td>
                 ))}
@@ -236,7 +244,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
               <tr>
                 <td className="feature-label">Fuel &amp; Transmission</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id}>
+                  <td key={car.id} className="vehicle-col">
                     {comparison?.comparison?.[idx]?.vehicle?.fuel_type || car.fuel_type} · {comparison?.comparison?.[idx]?.vehicle?.transmission || car.transmission}
                   </td>
                 ))}
@@ -245,7 +253,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
               <tr>
                 <td className="feature-label">Seating Capacity</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id}>
+                  <td key={car.id} className="vehicle-col">
                     {comparison?.comparison?.[idx]?.vehicle?.seating_capacity || car.seating_capacity} Seater
                   </td>
                 ))}
@@ -254,7 +262,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
               <tr>
                 <td className="feature-label">Engine &amp; Performance</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id}>
+                  <td key={car.id} className="vehicle-col">
                     <div>{comparison?.comparison?.[idx]?.vehicle?.engine || car.engine}</div>
                     <small className="dim-text">
                       {comparison?.comparison?.[idx]?.vehicle?.power_bhp || car.power_bhp} · {comparison?.comparison?.[idx]?.vehicle?.torque_nm || car.torque_nm}
@@ -266,7 +274,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
               <tr>
                 <td className="feature-label">Warranty Support</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id}>
+                  <td key={car.id} className="vehicle-col">
                     {comparison?.comparison?.[idx]?.vehicle?.warranty_info || car.warranty_info}
                   </td>
                 ))}

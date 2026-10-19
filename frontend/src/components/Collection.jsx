@@ -89,7 +89,7 @@ function VehicleCard({ car, onInquire, onCompare }) {
         </button>
         <button
           type="button"
-          className="button button-outline-sm text-orange-900"
+          className="button button-outline-sm"
           onClick={() => onCompare(car)}
         >
           Compare
@@ -145,7 +145,7 @@ export default function Collection({ userState, onInquireVehicle, onOpenCompare 
   ];
 
   return (
-    <section className="collection section-pad bg-atelier-stone px-[9%] py-[78px] text-[#20251f] max-[700px]:px-[22px] max-[700px]:py-[60px]" id="collection">
+    <section className="collection section-pad" id="collection">
       <div className="section-label">
         <span>02 / FIND YOUR NEXT CAR</span>
         <span>

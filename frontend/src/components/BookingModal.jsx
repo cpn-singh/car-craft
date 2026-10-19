@@ -40,6 +40,14 @@ export default function BookingModal({ isOpen, onClose, selectedVehicle, initial
   const [orderAddress, setOrderAddress] = useState('');
 
   useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' && isOpen) onClose();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
     if (initialTab) {
       setActiveTab(initialTab);
     }

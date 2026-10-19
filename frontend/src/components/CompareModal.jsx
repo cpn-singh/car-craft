@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { compareVehicles, compareParts, getVehicles, getParts, INDIAN_STATES } from '../services/api.js';
+import indianCars from '../data/cars.js';
+import indianParts from '../data/parts.js';
 
 export default function CompareModal({ isOpen, onClose, userState, onSelectInquiry, initialVehicleId }) {
   const [mode, setMode] = useState('vehicles'); // 'vehicles' or 'parts'
   const [selectedState, setSelectedState] = useState(userState || 'Maharashtra');
   
-  // Available items for selection
-  const [availableVehicles, setAvailableVehicles] = useState([]);
-  const [availableParts, setAvailableParts] = useState([]);
+  // Available items for selection (default to offline datasets so never empty)
+  const [availableVehicles, setAvailableVehicles] = useState(indianCars);
+  const [availableParts, setAvailableParts] = useState(indianParts);
   
   // Selected IDs
-  const [selectedVehicleIds, setSelectedVehicleIds] = useState([]);
-  const [selectedPartIds, setSelectedPartIds] = useState([]);
+  const [selectedVehicleIds, setSelectedVehicleIds] = useState([indianCars[0].id, indianCars[1]?.id || indianCars[0].id]);
+  const [selectedPartIds, setSelectedPartIds] = useState([indianParts[0].id, indianParts[1]?.id || indianParts[0].id]);
 
   // Comparison Results
   const [comparisonData, setComparisonData] = useState(null);
@@ -23,32 +25,41 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
     if (userState) setSelectedState(userState);
   }, [userState]);
 
+  // Escape key handler
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' && isOpen) onClose();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   // Load available items
   useEffect(() => {
     if (isOpen) {
       getVehicles('all', 'all').then((data) => {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           setAvailableVehicles(data);
           if (initialVehicleId) {
             const firstId = Number(initialVehicleId);
             const secondCar = data.find((c) => c.id !== firstId) || data[0];
             setSelectedVehicleIds([firstId, secondCar.id]);
-          } else if (data.length >= 2 && selectedVehicleIds.length === 0) {
+          } else if (data.length >= 2) {
             setSelectedVehicleIds([data[0].id, data[1].id]);
           }
         }
       }).catch(console.error);
 
       getParts('', 'all').then((data) => {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           setAvailableParts(data);
-          if (data.length >= 2 && selectedPartIds.length === 0) {
+          if (data.length >= 2) {
             setSelectedPartIds([data[0].id, data[1].id]);
           }
         }
       }).catch(console.error);
     }
-  }, [isOpen]);
+  }, [isOpen, initialVehicleId]);
 
   // Trigger comparison when IDs or State or Mode change
   useEffect(() => {
@@ -233,6 +244,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
             )}
 
             {/* Side by Side Specs & Dealers Table */}
+            <div className="table-scroll-hint">⟵ Swipe horizontally to compare cars &amp; dealers ⟶</div>
             <div className="table-responsive">
               <table className="comparison-table">
                 <thead>
@@ -255,13 +267,13 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                   {/* CHEAPEST DEALER ROW */}
                   <tr className="highlight-row">
                     <td className="feature-label">
-                      <strong>🏆 Best / Cheapest Dealer</strong>
-                      <span className="feature-sub">Lowest price in {selectedState}</span>
+                      <strong>🏆 Best Dealer</strong>
+                      <span className="feature-sub">Lowest in {selectedState}</span>
                     </td>
                     {comparisonData.comparison.map((item) => {
                       const bd = item.best_dealer;
                       return (
-                        <td key={item.vehicle.id} className="best-dealer-cell">
+                        <td key={item.vehicle.id} className="vehicle-col best-dealer-cell">
                           {bd ? (
                             <div className="dealer-card-compact">
                               <div className="dealer-header-mini">
@@ -280,7 +292,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                                 <span className="offer-discount">Save ₹{bd.dealer_discount.toLocaleString()}</span>
                               </div>
                               <div className="on-road-est">
-                                Approx On-Road in {bd.state}: <strong>{bd.formatted_on_road}</strong>
+                                <span>Approx On-Road:</span> <strong>{bd.formatted_on_road}</strong>
                               </div>
                               {bd.special_offers && (
                                 <div className="special-perk">🎁 {bd.special_offers}</div>
@@ -308,37 +320,37 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                   <tr>
                     <td className="feature-label">Fuel Type</td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}><strong>{item.vehicle.fuel_type}</strong></td>
+                      <td key={item.vehicle.id} className="vehicle-col"><strong>{item.vehicle.fuel_type}</strong></td>
                     ))}
                   </tr>
                   <tr>
                     <td className="feature-label">ARAI Certified Mileage / Range</td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}><span className="stat-pill">{item.vehicle.mileage_arai}</span></td>
+                      <td key={item.vehicle.id} className="vehicle-col"><span className="stat-pill">{item.vehicle.mileage_arai}</span></td>
                     ))}
                   </tr>
                   <tr>
                     <td className="feature-label">Safety Rating</td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}><span className="safety-badge">🛡️ {item.vehicle.safety_rating}</span></td>
+                      <td key={item.vehicle.id} className="vehicle-col"><span className="safety-badge">🛡️ {item.vehicle.safety_rating}</span></td>
                     ))}
                   </tr>
                   <tr>
                     <td className="feature-label">Seating Capacity</td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}>{item.vehicle.seating_capacity} Seats</td>
+                      <td key={item.vehicle.id} className="vehicle-col">{item.vehicle.seating_capacity} Seats</td>
                     ))}
                   </tr>
                   <tr>
                     <td className="feature-label">Transmission</td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}>{item.vehicle.transmission}</td>
+                      <td key={item.vehicle.id} className="vehicle-col">{item.vehicle.transmission}</td>
                     ))}
                   </tr>
                   <tr>
-                    <td className="feature-label">Engine & Power</td>
+                    <td className="feature-label">Engine &amp; Power</td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}>
+                      <td key={item.vehicle.id} className="vehicle-col">
                         <div>{item.vehicle.engine}</div>
                         {item.vehicle.power_bhp && <span className="dim-text">{item.vehicle.power_bhp} · {item.vehicle.torque_nm}</span>}
                       </td>
@@ -347,18 +359,18 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                   <tr>
                     <td className="feature-label">Warranty Coverage</td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}>{item.vehicle.warranty_info}</td>
+                      <td key={item.vehicle.id} className="vehicle-col">{item.vehicle.warranty_info}</td>
                     ))}
                   </tr>
 
                   {/* ALL DEALERS LIST */}
                   <tr>
                     <td className="feature-label">
-                      <strong>All Verified Dealers Offering This Car</strong>
-                      <span className="feature-sub">Ranked by lowest price</span>
+                      <strong>All Verified Dealers</strong>
+                      <span className="feature-sub">Ranked by price</span>
                     </td>
                     {comparisonData.comparison.map((item) => (
-                      <td key={item.vehicle.id}>
+                      <td key={item.vehicle.id} className="vehicle-col">
                         <div className="dealers-list-mini">
                           {item.all_dealer_offers.map((d, idx) => (
                             <div className={`dealer-row-item ${d.is_cheapest ? 'best-row' : ''}`} key={d.dealer_id}>
@@ -385,6 +397,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
         {/* PARTS COMPARISON TABLE */}
         {!loading && comparisonData && mode === 'parts' && (
           <div className="comparison-content">
+            <div className="table-scroll-hint">⟵ Swipe horizontally to compare items &amp; sellers ⟶</div>
             <div className="table-responsive">
               <table className="comparison-table">
                 <thead>

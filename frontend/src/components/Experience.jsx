@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Experience({ onOpenModal }) {
+export default function Experience({ onOpenModal, onOpenFilm }) {
   return (
     <section className="experience" id="experience">
       <div className="experience-image">
@@ -26,13 +26,26 @@ export default function Experience({ onOpenModal }) {
           Unhurried test drives on curated routes, authentic filter coffee or single-origin espresso,
           and transparent on-road invoicing comparing the best dealer discounts in India.
         </p>
-        <button
-          className="button button-outline"
-          type="button"
-          onClick={() => onOpenModal('inquiry')}
-        >
-          Book a Private Atelier Viewing <span>↗</span>
-        </button>
+        <div className="experience-actions">
+          <button
+            className="button button-outline"
+            type="button"
+            onClick={() => onOpenModal('inquiry')}
+          >
+            Book a Private Atelier Viewing <span>↗</span>
+          </button>
+          {onOpenFilm && (
+            <button
+              className="play-film"
+              type="button"
+              onClick={onOpenFilm}
+              aria-label="Watch atelier cinematic film"
+            >
+              <span className="play-icon" aria-hidden="true">▶</span>
+              <span>Watch film <span className="film-time">1:34</span></span>
+            </button>
+          )}
+        </div>
         <div className="experience-note">
           MON – SAT &nbsp; / &nbsp; BY APPOINTMENT<br />
           LAVELLE ROAD, BENGALURU &amp; WORLI, MUMBAI

@@ -2,8 +2,11 @@ import React from 'react';
 
 export default function Philosophy() {
   return (
-    <section className="intro section-pad bg-atelier-ink px-[9%] py-[104px] max-[700px]:px-[22px] max-[700px]:py-[72px]" id="philosophy">
-      <div className="section-label"><span>01 / A BETTER STARTING POINT</span><span>THE DETAILS, MADE CLEAR</span></div>
+    <section className="intro section-pad" id="philosophy">
+      <div className="section-label">
+        <span>01 / A BETTER STARTING POINT</span>
+        <span>THE DETAILS, MADE CLEAR</span>
+      </div>
       <div className="intro-grid">
         <p className="intro-kicker">Good decisions<br />start with <em>clarity.</em></p>
         <div className="intro-copy">

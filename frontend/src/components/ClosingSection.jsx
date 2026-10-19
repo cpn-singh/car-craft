@@ -2,13 +2,13 @@ import React from 'react';
 
 export default function ClosingSection({ onOpenModal }) {
   return (
-    <section className="closing section-pad bg-[#d1a17f] px-[9%] py-[91px] text-[#191a16] max-[700px]:px-[22px] max-[700px]:py-[62px]" id="contact">
+    <section className="closing section-pad" id="contact">
       <div className="section-label">
         <span>07 / YOUR NEXT CHAPTER</span>
         <span>WE’RE HERE WHEN YOU’RE READY</span>
       </div>
       <h2>Shall we take<br />the <em>long way?</em></h2>
-      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', position: 'relative', zIndex: 2 }}>
+      <div className="closing-actions">
         <button
           className="button button-light"
           type="button"

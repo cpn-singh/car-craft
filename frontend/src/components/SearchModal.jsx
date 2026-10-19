@@ -15,6 +15,14 @@ export default function SearchModal({ isOpen, onClose, userState, initialQuery =
   }, [userState]);
 
   useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' && isOpen) onClose();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
     if (isOpen && initialQuery) {
       setQuery(initialQuery);
     }

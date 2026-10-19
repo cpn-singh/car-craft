@@ -58,27 +58,67 @@ export default function App() {
     setIsSearchOpen(true);
   }
 
-  // Reveal observer
+  // Reveal observer with viewport check and fallback guarantee
   useEffect(() => {
-    const elements = document.querySelectorAll(
-      '.section-label, .intro-grid, .intro-stat-row, .collection-heading, .filters, .car-card, .experience-copy, .closing h2, .compare-section-header, .parts-section-header, .advisor-section-header',
+    const selector =
+      '.section-label, .intro-grid, .intro-stat-row, .collection-heading, .filters, .car-card, .experience-copy, .closing h2, .compare-section-header, .parts-section-header, .advisor-section-header';
+    const elements = document.querySelectorAll(selector);
+
+    if (!('IntersectionObserver' in window)) {
+      elements.forEach((el) => el.classList.add('visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '60px 0px 60px 0px' },
     );
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
 
     elements.forEach((element) => {
       element.classList.add('reveal');
-      observer.observe(element);
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 60) {
+        element.classList.add('visible');
+      } else {
+        observer.observe(element);
+      }
     });
 
-    return () => observer.disconnect();
+    // Failsafe: reveal all content after 500ms so no section remains hidden
+    const timer = setTimeout(() => {
+      elements.forEach((el) => el.classList.add('visible'));
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
   }, []);
+
+  const anyModalOpen = isFilmOpen || isBookingOpen || isCompareOpen || isSearchOpen || isAdvisorOpen;
+
+  useEffect(() => {
+    // Clear any stuck inline overflow from previous sessions
+    if (document.body.style.overflow === 'hidden') {
+      document.body.style.overflow = '';
+    }
+
+    if (anyModalOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [anyModalOpen]);
 
   return (
     <>
@@ -130,7 +170,10 @@ export default function App() {
           onSelectInquiry={handleInquireVehicle}
         />
 
-        <Experience onOpenModal={(tab) => handleOpenModal(tab, null)} />
+        <Experience
+          onOpenModal={(tab) => handleOpenModal(tab, null)}
+          onOpenFilm={() => setIsFilmOpen(true)}
+        />
         <ClosingSection onOpenModal={(tab) => handleOpenModal(tab, null)} />
       </main>
 

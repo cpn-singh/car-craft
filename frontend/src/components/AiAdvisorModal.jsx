@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { askAiAdvisor, INDIAN_STATES } from '../services/api.js';
 
 export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInquiry }) {
@@ -18,6 +18,18 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
     'Find best deals on Tata Nexon EV with subsidy in Karnataka',
     'Recommend top 4K dashcam for Indian roads with installation'
   ];
+
+  useEffect(() => {
+    if (userState) setSelectedState(userState);
+  }, [userState]);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' && isOpen) onClose();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

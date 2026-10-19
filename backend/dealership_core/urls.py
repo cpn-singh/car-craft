@@ -11,9 +11,41 @@ from rest_framework.response import Response
 from .ai_views import compare_vehicles, compare_parts, universal_search, ai_advisor
 
 
+from django.http import HttpResponse
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def api_root(request):
+    accept_header = request.META.get('HTTP_ACCEPT', '')
+    # If accessed by a web browser at root `/`
+    if 'text/html' in accept_header and request.path == '/':
+        html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=http://localhost:5173/">
+  <title>Aurel India</title>
+  <style>
+    body { background: #11120f; color: #eae8e1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .box { text-align: center; max-width: 480px; padding: 32px; border: 1px solid rgba(234,232,225,0.15); border-radius: 12px; background: rgba(255,255,255,0.02); }
+    h1 { color: #eae8e1; font-size: 20px; margin-bottom: 12px; }
+    p { color: #8a8a82; font-size: 14px; margin-bottom: 24px; }
+    a { display: inline-block; background: #c5a77a; color: #11120f; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Aurel India Motor Atelier</h1>
+    <p>Redirecting you to the interactive web application on port 5173...</p>
+    <a href="http://localhost:5173/">Launch Aurel India Web App &rarr;</a>
+  </div>
+  <script>
+    window.location.replace("http://localhost:5173/");
+  </script>
+</body>
+</html>"""
+        return HttpResponse(html, content_type='text/html')
+
     return Response({
         "status": "online",
         "market": "India",

@@ -39,9 +39,9 @@ export default function PartsSection({ userState, onSelectPartOrder }) {
   });
 
   return (
-    <section className="section-pad parts-section bg-atelier-ink px-[9%] py-[82px] max-[700px]:px-[22px] max-[700px]:py-[62px]" id="accessories">
+    <section className="section-pad parts-section" id="accessories">
       <div className="section-label">
-          <span>04 / PARTS &amp; ACCESSORIES</span>
+        <span>04 / PARTS &amp; ACCESSORIES</span>
         <span>SELLERS IN {userState.toUpperCase()}</span>
       </div>
 
@@ -52,23 +52,23 @@ export default function PartsSection({ userState, onSelectPartOrder }) {
         </div>
 
         <div className="parts-filter-pills">
-            <button
+          <button
             type="button"
-              className={`filter-pill inline-flex min-h-[38px] items-center justify-center gap-2 rounded-sm border px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-atelier-clay ${activeFilter === 'all' ? 'active' : ''}`}
+            className={`filter-pill ${activeFilter === 'all' ? 'active' : ''}`}
             onClick={() => setActiveFilter('all')}
           >
             All items <span>{parts.length}</span>
           </button>
           <button
             type="button"
-            className={`filter-pill inline-flex min-h-[38px] items-center justify-center rounded-sm border px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-atelier-clay ${activeFilter === 'accessories' ? 'active' : ''}`}
+            className={`filter-pill ${activeFilter === 'accessories' ? 'active' : ''}`}
             onClick={() => setActiveFilter('accessories')}
           >
             Accessories
           </button>
           <button
             type="button"
-            className={`filter-pill inline-flex min-h-[38px] items-center justify-center rounded-sm border px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-atelier-clay ${activeFilter === 'spares' ? 'active' : ''}`}
+            className={`filter-pill ${activeFilter === 'spares' ? 'active' : ''}`}
             onClick={() => setActiveFilter('spares')}
           >
             Parts &amp; tyres
