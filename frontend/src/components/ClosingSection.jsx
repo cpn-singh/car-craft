@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ClosingSection({ onOpenModal }) {
   return (
-    <section className="closing section-pad" id="contact">
+    <section className="closing section-pad bg-[#d1a17f] px-[9%] py-[91px] text-[#191a16] max-[700px]:px-[22px] max-[700px]:py-[62px]" id="contact">
       <div className="section-label">
         <span>07 / YOUR NEXT CHAPTER</span>
         <span>WE’RE HERE WHEN YOU’RE READY</span>

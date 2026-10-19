@@ -16,8 +16,8 @@ export default function Navigation({
   }
 
   return (
-    <header className="nav-wrap">
-      <div className="brand-group">
+    <header className="nav-wrap fixed inset-x-0 top-0 z-50 flex h-[76px] items-center justify-between border-b border-white/15 bg-atelier-ink/95 px-[5.5%] backdrop-blur-md max-[700px]:h-[68px] max-[700px]:px-5">
+      <div className="brand-group flex items-center gap-6">
         <a className="brand" href="#home" aria-label="Aurel home">
           <span className="brand-mark">A</span>
           <span className="brand-name">
@@ -40,7 +40,7 @@ export default function Navigation({
         </div>
       </div>
 
-      <nav className={`nav-links ${isMenuOpen ? 'open' : ''}`} aria-label="Main navigation">
+      <nav className={`nav-links hidden items-center gap-8 text-xs min-[701px]:flex ${isMenuOpen ? 'open max-[700px]:absolute max-[700px]:left-0 max-[700px]:right-0 max-[700px]:top-[68px] max-[700px]:z-50 max-[700px]:flex max-[700px]:flex-col max-[700px]:items-stretch max-[700px]:gap-0 max-[700px]:border-b max-[700px]:border-white/10 max-[700px]:bg-atelier-ink max-[700px]:px-5' : ''}`} aria-label="Main navigation">
         <a href="#collection" onClick={closeMenu}>Cars</a>
         <a href="#compare" className="highlight-gold" onClick={closeMenu}>Compare cars</a>
         <a href="#accessories" onClick={closeMenu}>Parts &amp; accessories</a>
@@ -74,7 +74,7 @@ export default function Navigation({
         </button>
 
         <button
-          className="menu-toggle"
+          className="menu-toggle hidden cursor-pointer max-[700px]:flex"
           type="button"
           aria-label="Toggle navigation menu"
           aria-expanded={isMenuOpen}

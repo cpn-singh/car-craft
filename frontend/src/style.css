@@ -1,3 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-atelier-ink: #171b17;
+  --color-atelier-paper: #f3f0e8;
+  --color-atelier-clay: #c67b53;
+  --color-atelier-stone: #eeeae1;
+  --font-sans: 'Manrope', sans-serif;
+}
+
+@layer components {
 :root {
   --ink:#11120f;
   --paper:#eae8e1;
@@ -3479,6 +3490,7 @@ html { scroll-padding-top: 92px; }
   .comparison-table th, .comparison-table td { padding: 13px 12px; }
   .comparison-table .feature-label { min-width: 150px; }
   .table-car-img { height: 160px; }
+}
 }
 
 .verified-pill {

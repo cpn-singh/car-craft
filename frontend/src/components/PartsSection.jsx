@@ -39,7 +39,7 @@ export default function PartsSection({ userState, onSelectPartOrder }) {
   });
 
   return (
-    <section className="section-pad parts-section" id="accessories">
+    <section className="section-pad parts-section bg-atelier-ink px-[9%] py-[82px] max-[700px]:px-[22px] max-[700px]:py-[62px]" id="accessories">
       <div className="section-label">
           <span>04 / PARTS &amp; ACCESSORIES</span>
         <span>SELLERS IN {userState.toUpperCase()}</span>
@@ -52,23 +52,23 @@ export default function PartsSection({ userState, onSelectPartOrder }) {
         </div>
 
         <div className="parts-filter-pills">
-          <button
+            <button
             type="button"
-            className={`filter-pill ${activeFilter === 'all' ? 'active' : ''}`}
+              className={`filter-pill inline-flex min-h-[38px] items-center justify-center gap-2 rounded-sm border px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-atelier-clay ${activeFilter === 'all' ? 'active' : ''}`}
             onClick={() => setActiveFilter('all')}
           >
             All items <span>{parts.length}</span>
           </button>
           <button
             type="button"
-            className={`filter-pill ${activeFilter === 'accessories' ? 'active' : ''}`}
+            className={`filter-pill inline-flex min-h-[38px] items-center justify-center rounded-sm border px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-atelier-clay ${activeFilter === 'accessories' ? 'active' : ''}`}
             onClick={() => setActiveFilter('accessories')}
           >
             Accessories
           </button>
           <button
             type="button"
-            className={`filter-pill ${activeFilter === 'spares' ? 'active' : ''}`}
+            className={`filter-pill inline-flex min-h-[38px] items-center justify-center rounded-sm border px-3 py-2 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-atelier-clay ${activeFilter === 'spares' ? 'active' : ''}`}
             onClick={() => setActiveFilter('spares')}
           >
             Parts &amp; tyres
@@ -88,7 +88,7 @@ export default function PartsSection({ userState, onSelectPartOrder }) {
             const dealer = bestOffer?.dealer;
 
             return (
-              <div className="part-showcase-card" key={part.id}>
+              <div className="part-showcase-card flex min-w-0 flex-col overflow-hidden rounded-sm border border-white/10 bg-[#1c211c]" key={part.id}>
                 {part.image_url && (
                   <img
                     src={part.image_url}
@@ -97,7 +97,7 @@ export default function PartsSection({ userState, onSelectPartOrder }) {
                     onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = partImageFallback; }}
                   />
                 )}
-                <div className="part-showcase-body">
+                <div className="part-showcase-body flex grow flex-col p-[18px]">
                   <div className="part-badge-row">
                     <span className="brand-tag">{part.brand}</span>
                     <span className="warranty-tag">{part.warranty_months} month warranty</span>

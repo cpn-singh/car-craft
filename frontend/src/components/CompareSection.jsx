@@ -49,7 +49,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
   const activeCars = selectedIds.map((id) => indianCars.find((c) => c.id === id) || indianCars[0]);
 
   return (
-    <section className="section-pad compare-section" id="compare">
+    <section className="section-pad compare-section bg-[#1d221d] px-[9%] py-[82px] max-[700px]:px-[22px] max-[700px]:py-[62px]" id="compare">
       <div className="section-label">
         <span>03 / SIDE-BY-SIDE COMPARISON</span>
           <span>LOCAL PRICES · {userState.toUpperCase()}</span>

@@ -92,7 +92,7 @@ export default function App() {
         onOpenAdvisor={() => setIsAdvisorOpen(true)}
       />
 
-      <main>
+      <main className="min-h-screen">
         {/* Hero with interactive Search Bar */}
         <Hero
           userState={userState}
