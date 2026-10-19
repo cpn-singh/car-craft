@@ -221,21 +221,30 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                 
                 {comparisonData.ai_verdict.cheapest_option && (
                   <div className="cheapest-dealer-callout">
-                    <div className="callout-badge">CHEAPEST DEALER IN {selectedState.toUpperCase()}</div>
-                    <div className="callout-grid">
-                      <div>
-                        <strong>{comparisonData.ai_verdict.cheapest_option.vehicle_name}</strong>
-                        <div className="price-tag">{comparisonData.ai_verdict.cheapest_option.price}</div>
+                    <div className="callout-badge">
+                      CHEAPEST DEALER IN {selectedState.toUpperCase()}
+                    </div>
+                    
+                    <div className="callout-vehicle-group">
+                      <h4 className="callout-vehicle-name">
+                        {comparisonData.ai_verdict.cheapest_option.vehicle_name}
+                      </h4>
+                      <div className="callout-vehicle-price">
+                        {comparisonData.ai_verdict.cheapest_option.price}
                       </div>
-                      <div>
-                        <span className="label-dim">Verified Dealer:</span>
-                        <div className="dealer-highlight-name">
-                          {comparisonData.ai_verdict.cheapest_option.dealer} ({comparisonData.ai_verdict.cheapest_option.city})
-                        </div>
+                    </div>
+
+                    <div className="callout-meta-group">
+                      <span className="callout-meta-label">VERIFIED DEALER:</span>
+                      <div className="callout-dealer-name">
+                        {comparisonData.ai_verdict.cheapest_option.dealer} ({comparisonData.ai_verdict.cheapest_option.city})
                       </div>
-                      <div>
-                        <span className="label-dim">Your Direct Savings:</span>
-                        <div className="savings-highlight">Save {comparisonData.ai_verdict.cheapest_option.savings_vs_competitor}</div>
+                    </div>
+
+                    <div className="callout-meta-group">
+                      <span className="callout-meta-label">YOUR DIRECT SAVINGS:</span>
+                      <div className="callout-savings-value">
+                        Save {comparisonData.ai_verdict.cheapest_option.savings_vs_competitor}
                       </div>
                     </div>
                   </div>

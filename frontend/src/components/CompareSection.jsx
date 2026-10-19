@@ -114,18 +114,32 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
             <p>{comparison.ai_verdict.summary}</p>
 
             {comparison.ai_verdict.cheapest_option && (
-              <div className="inline-deal-highlight">
-                <div>
-                  <span className="dim-title">Lowest Deal in {userState}:</span>
-                  <strong>{comparison.ai_verdict.cheapest_option.vehicle_name}</strong> at{' '}
-                  <span className="green-txt">{comparison.ai_verdict.cheapest_option.price}</span>
+              <div className="cheapest-dealer-callout">
+                <div className="callout-badge">
+                  CHEAPEST DEALER IN {userState.toUpperCase()}
                 </div>
-                <div>
-                  <span className="dim-title">Cheapest Authorized Dealer:</span>
-                  <strong>{comparison.ai_verdict.cheapest_option.dealer}</strong> ({comparison.ai_verdict.cheapest_option.city})
+                
+                <div className="callout-vehicle-group">
+                  <h4 className="callout-vehicle-name">
+                    {comparison.ai_verdict.cheapest_option.vehicle_name}
+                  </h4>
+                  <div className="callout-vehicle-price">
+                    {comparison.ai_verdict.cheapest_option.price}
+                  </div>
                 </div>
-                <div className="savings-badge">
-                  Save {comparison.ai_verdict.cheapest_option.savings_vs_competitor}
+
+                <div className="callout-meta-group">
+                  <span className="callout-meta-label">VERIFIED DEALER:</span>
+                  <div className="callout-dealer-name">
+                    {comparison.ai_verdict.cheapest_option.dealer} ({comparison.ai_verdict.cheapest_option.city})
+                  </div>
+                </div>
+
+                <div className="callout-meta-group">
+                  <span className="callout-meta-label">YOUR DIRECT SAVINGS:</span>
+                  <div className="callout-savings-value">
+                    Save {comparison.ai_verdict.cheapest_option.savings_vs_competitor}
+                  </div>
                 </div>
               </div>
             )}

@@ -1750,50 +1750,81 @@ h1 em,h2 em,.intro-kicker em {
 }
 
 .cheapest-dealer-callout {
-  background: rgba(52, 211, 153, 0.08);
-  border: 1px solid rgba(52, 211, 153, 0.4);
-  padding: 16px;
-  border-radius: 4px;
+  background: #17231c;
+  border: 1px solid rgba(52, 211, 153, 0.42);
+  border-radius: 10px;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  max-width: 440px;
+  box-sizing: border-box;
+  text-align: left;
 }
 
 .callout-badge {
-  font-size: 9px;
-  letter-spacing: 0.15em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: #34d399;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.callout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  align-items: center;
-}
-
-.price-tag {
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.label-dim {
-  font-size: 9px;
-  color: #888;
-  display: block;
   text-transform: uppercase;
+  margin: 0;
+  line-height: 1.3;
 }
 
-.dealer-highlight-name {
-  font-size: 13px;
-  color: #eee;
+.callout-vehicle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.callout-vehicle-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-family: inherit;
+}
+
+.callout-vehicle-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.callout-meta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.callout-meta-label {
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #748b7f;
+  text-transform: uppercase;
+  line-height: 1.2;
 }
 
-.savings-highlight {
+.callout-dealer-name {
   font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.35;
+}
+
+.callout-savings-value {
+  font-size: 17px;
   font-weight: 700;
   color: #34d399;
+  line-height: 1.3;
 }
 
 /* Comparison Table */
@@ -4605,17 +4636,30 @@ html { scroll-padding-top: 92px; }
   }
 
   .cheapest-dealer-callout {
-    padding: 12px;
+    padding: 18px 16px;
+    gap: 14px;
+    width: 100%;
+    max-width: 100%;
   }
 
-  .callout-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+  .callout-badge {
+    font-size: 10.5px;
   }
 
-  .savings-highlight {
+  .callout-vehicle-name {
+    font-size: 16.5px;
+  }
+
+  .callout-vehicle-price {
+    font-size: 22px;
+  }
+
+  .callout-dealer-name {
     font-size: 14px;
-    word-break: break-word;
+  }
+
+  .callout-savings-value {
+    font-size: 16px;
   }
 
   .modal-card {
