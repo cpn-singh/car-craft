@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+
+# Prevent Python from writing bytecode and buffer logs
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PORT=8080
+
+WORKDIR /app
+
+# Install minimal OS build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python packages
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy backend codebase
+COPY . .
+
+# Collect static files into staticfiles/
+RUN python manage.py collectstatic --noinput
+
+# Expose container port
+EXPOSE 8080
+
+# Run migrations and launch Gunicorn production server
+CMD ["sh", "-c", "python manage.py migrate && gunicorn dealership_core.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 2 --threads 4 --timeout 120"]
