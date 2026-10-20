@@ -8,6 +8,8 @@
 import React, { useState, useEffect } from 'react';
 import { submitInquiry, createServiceAppointment, getParts, createOrder } from '../services/api.js';
 
+const FALLBACK_PART_IMG = 'https://images.unsplash.com/photo-1600705722908-bab1e61c0b4d?auto=format&fit=crop&w=800&q=85';
+
 export default function BookingModal({
   isOpen,
   onClose,
@@ -462,7 +464,16 @@ export default function BookingModal({
                   )}
                   {parts.map((p) => (
                     <div className="part-card bg-[#1c211c] border border-white/10 rounded-xs p-4 flex gap-4 hover:border-[#c5a77a]/40 transition-colors" key={`part-${p.id}`}>
-                      {p.image_url && <img src={p.image_url} alt={p.name} className="part-img w-24 h-24 object-cover rounded-xs shrink-0 bg-black/40" loading="lazy" />}
+                      <img
+                        src={p.image_url || FALLBACK_PART_IMG}
+                        alt={p.name}
+                        className="part-img w-24 h-24 object-cover rounded-xs shrink-0 bg-black/40"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = FALLBACK_PART_IMG;
+                        }}
+                      />
                       <div className="part-info flex-1 flex flex-col justify-between text-xs">
                         <div>
                           <span className="part-sku text-[9px] uppercase tracking-wider text-[#888] block">{p.sku} · {p.category_name}</span>

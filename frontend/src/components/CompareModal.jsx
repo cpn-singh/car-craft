@@ -10,19 +10,45 @@ import { compareVehicles, compareParts, getVehicles, getParts, INDIAN_STATES } f
 import indianCars from '../data/cars.js';
 import indianParts from '../data/parts.js';
 
-export default function CompareModal({ isOpen, onClose, userState, onSelectInquiry, initialVehicleId }) {
-  const [mode, setMode] = useState('vehicles');
+const FALLBACK_CAR_IMG = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85';
+const FALLBACK_PART_IMG = 'https://images.unsplash.com/photo-1600705722908-bab1e61c0b4d?auto=format&fit=crop&w=800&q=85';
+
+export default function CompareModal({
+  isOpen,
+  onClose,
+  userState,
+  onSelectInquiry,
+  initialVehicleId,
+  initialIds = null,
+  initialMode = 'vehicles'
+}) {
+  const [mode, setMode] = useState(initialMode || 'vehicles');
   const [selectedState, setSelectedState] = useState(userState || 'Maharashtra');
 
   const [availableVehicles, setAvailableVehicles] = useState(indianCars);
   const [availableParts, setAvailableParts] = useState(indianParts);
 
-  const [selectedVehicleIds, setSelectedVehicleIds] = useState([indianCars[0].id, indianCars[1]?.id || indianCars[0].id]);
-  const [selectedPartIds, setSelectedPartIds] = useState([indianParts[0].id, indianParts[1]?.id || indianParts[0].id]);
+  const [selectedVehicleIds, setSelectedVehicleIds] = useState(
+    initialIds && initialMode === 'vehicles' ? initialIds.slice(0, 3) : [indianCars[0].id, indianCars[1]?.id || indianCars[0].id]
+  );
+  const [selectedPartIds, setSelectedPartIds] = useState(
+    initialIds && initialMode === 'parts' ? initialIds.slice(0, 3) : [indianParts[0].id, indianParts[1]?.id || indianParts[0].id]
+  );
 
   const [comparisonData, setComparisonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (initialMode) setMode(initialMode);
+    if (initialIds && initialIds.length > 0) {
+      if (initialMode === 'parts') {
+        setSelectedPartIds(initialIds.slice(0, 3));
+      } else {
+        setSelectedVehicleIds(initialIds.slice(0, 3));
+      }
+    }
+  }, [initialIds, initialMode, isOpen]);
 
   useEffect(() => {
     if (userState) setSelectedState(userState);
@@ -347,9 +373,13 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                           <div className="flex flex-col items-center text-center">
                             <div className="w-full max-w-[220px] aspect-[16/10] overflow-hidden rounded-xs bg-black/40 mb-3 shadow-md">
                               <img
-                                src={item.vehicle.full_image_url || '/assets/images/fallback-car.jpg'}
+                                src={item.vehicle.full_image_url || FALLBACK_CAR_IMG}
                                 alt={item.vehicle.name}
                                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = FALLBACK_CAR_IMG;
+                                }}
                               />
                             </div>
                             <h4 className="font-semibold text-white text-sm sm:text-base tracking-tight">{item.vehicle.name}</h4>
@@ -559,9 +589,15 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                           style={{ width: `${100 / (comparisonData.comparison.length + 1)}%` }}
                         >
                           <div className="flex flex-col items-center text-center">
-                            {item.part.image_url && (
-                              <img src={item.part.image_url} alt={item.part.name} className="w-32 h-20 object-cover rounded-xs mb-2 bg-black/40 shadow-md" />
-                            )}
+                            <img
+                              src={item.part.image_url || FALLBACK_PART_IMG}
+                              alt={item.part.name}
+                              className="w-32 h-20 object-cover rounded-xs mb-2 bg-black/40 shadow-md"
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = FALLBACK_PART_IMG;
+                              }}
+                            />
                             <h4 className="font-semibold text-white text-sm sm:text-base tracking-tight">{item.part.name}</h4>
                             <span className="text-[10px] text-[#888] uppercase tracking-wider mt-0.5 block">{item.part.brand} · {item.part.item_type}</span>
                             <span className="text-xs sm:text-sm text-[#c5a77a] mt-1 font-bold">MRP: {item.part.formatted_price}</span>

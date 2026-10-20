@@ -1,7 +1,13 @@
 from rest_framework import viewsets, permissions, filters
+from rest_framework.response import Response
 from django.db.models import Min
 from .models import Vehicle, VehicleImage, DealerVehiclePrice
 from .serializers import VehicleSerializer, VehicleImageSerializer, DealerVehiclePriceSerializer
+from dealership_core.ai_web_searcher import (
+    search_internet_automotive,
+    INTERNET_CAR_CATALOG,
+    ground_vehicle_with_location
+)
 
 
 class VehicleViewSet(viewsets.ModelViewSet):
@@ -11,6 +17,34 @@ class VehicleViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'make', 'model', 'variant', 'category', 'fuel_type', 'body_type', 'description']
     ordering_fields = ['price', 'year', 'mileage', 'created_at']
+
+    def list(self, request, *args, **kwargs):
+        """
+        Dynamically retrieves cars from AI internet search grounded by user location.
+        """
+        state = request.query_params.get('state', 'Maharashtra')
+        category = request.query_params.get('category', 'all')
+        query = request.query_params.get('search', '') or request.query_params.get('q', '')
+        sort_by = request.query_params.get('sort', 'cheapest')
+
+        search_res = search_internet_automotive(
+            query=query,
+            category_type='vehicles',
+            state=state if state != 'All India' else 'Maharashtra',
+            sort_by=sort_by
+        )
+        cars = search_res['results']['vehicles']
+        if category and category != 'all':
+            cars = [c for c in cars if c.get('category') == category]
+        return Response(cars)
+
+    def retrieve(self, request, *args, **kwargs):
+        lookup_id = kwargs.get('pk')
+        state = request.query_params.get('state', 'Maharashtra')
+        match = next((v for v in INTERNET_CAR_CATALOG if str(v['id']) == str(lookup_id)), None)
+        if match:
+            return Response(ground_vehicle_with_location(match, state if state != 'All India' else 'Maharashtra'))
+        return super().retrieve(request, *args, **kwargs)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

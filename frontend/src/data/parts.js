@@ -12,7 +12,7 @@ export const indianParts = [
     compatibility: "Universal (Mahindra XUV700, Safari, Creta, Fortuner, BMW)",
     warranty_months: 24,
     description: "Front 4K & Rear 1080P recording with Sony Starvis 2 night vision, Built-in GPS, ADAS alerts, and 24H parking surveillance.",
-    image_url: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80",
+    image_url: "https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=800&q=85",
     best_dealer_offer: {
       dealer: {
         name: "Koncept Automotive Delhi",
@@ -38,7 +38,7 @@ export const indianParts = [
     compatibility: "All Indian Cars (Metallic & Matte Finishes)",
     warranty_months: 12,
     description: "Hydrophobic 9H barrier shielding your car paint against intense Indian summer heat, acidic monsoon rain, and fine dust swirls.",
-    image_url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80",
+    image_url: "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=800&q=85",
     best_dealer_offer: {
       dealer: {
         name: "AutoHangar Luxury & Multi-Brand",
@@ -64,7 +64,7 @@ export const indianParts = [
     compatibility: "Mahindra XUV700 (MX, AX3, AX5, AX7, AX7L)",
     warranty_months: 12,
     description: "Heavy-duty extruded aircraft-grade aluminium running boards with illuminated door sill entry scuff plates.",
-    image_url: "https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=800&q=80",
+    image_url: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=85",
     best_dealer_offer: {
       dealer: {
         name: "PPS Motors & Automotive Hub",
@@ -90,7 +90,7 @@ export const indianParts = [
     compatibility: "Tata Safari (6-Seater and 7-Seater)",
     warranty_months: 12,
     description: "High-wall water, mud and slush proof 7-layer composite leatherette mats with detachable curly coil mats for easy cleaning.",
-    image_url: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80",
+    image_url: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=800&q=85",
     best_dealer_offer: {
       dealer: {
         name: "Kalyani Motors Automotive Hub",
@@ -116,7 +116,7 @@ export const indianParts = [
     compatibility: "BMW 3 Series, Fortuner, XUV700, Safari, Creta",
     warranty_months: 24,
     description: "Zero brake dust formulation with anti-fade stopping power under high thermal loads and aggressive Indian highway driving.",
-    image_url: "https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=800&q=80",
+    image_url: "https://images.unsplash.com/photo-1600705722908-bab1e61c0b4d?auto=format&fit=crop&w=800&q=85",
     best_dealer_offer: {
       dealer: {
         name: "Kalyani Motors Automotive Hub",
@@ -142,7 +142,7 @@ export const indianParts = [
     compatibility: "Mahindra XUV700, Tata Safari, Hyundai Tucson",
     warranty_months: 36,
     description: "Reinforced FlexMax 2.0 sidewalls engineered for Indian broken tarmac, shorter wet braking distance, and ultra-plush ride.",
-    image_url: "https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=800&q=80",
+    image_url: "https://images.unsplash.com/photo-1578844251758-2f71da64c96f?auto=format&fit=crop&w=800&q=85",
     best_dealer_offer: {
       dealer: {
         name: "Shaman Wheels & Auto Atelier",

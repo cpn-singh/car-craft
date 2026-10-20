@@ -9,6 +9,8 @@ import React, { useState, useEffect } from 'react';
 import { compareVehicles, INDIAN_STATES } from '../services/api.js';
 import indianCars from '../data/cars.js';
 
+const FALLBACK_CAR_IMG = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85';
+
 export default function CompareSection({ userState, onStateChange, onInquireVehicle }) {
   const [selectedIds, setSelectedIds] = useState([7, 8]);
   const [comparison, setComparison] = useState(null);
@@ -185,14 +187,23 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
                 </th>
                 {activeCars.map((car, idx) => {
                   const compItem = comparison?.comparison?.[idx];
-                  const displayImg = compItem?.vehicle?.full_image_url || car.full_image_url || '/assets/images/fallback-car.jpg';
+                  const displayImg = compItem?.vehicle?.full_image_url || car.full_image_url || FALLBACK_CAR_IMG;
                   const displayName = compItem?.vehicle?.name || car.name;
                   const displayPrice = compItem?.vehicle?.formatted_price || car.formatted_price;
 
                   return (
                     <th key={`head-col-${car.id}`} className="vehicle-col min-w-[240px] p-4 border-r border-white/10 last:border-r-0">
                       <div className="table-car-header flex flex-col items-center text-center">
-                        <img src={displayImg} alt={displayName} className="table-car-img w-28 h-16 object-cover rounded-xs mb-2" loading="lazy" />
+                        <img
+                          src={displayImg}
+                          alt={displayName}
+                          className="table-car-img w-28 h-16 object-cover rounded-xs mb-2"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = FALLBACK_CAR_IMG;
+                          }}
+                        />
                         <h4 className="font-semibold text-white text-sm">{displayName}</h4>
                         <span className="table-car-base-price text-[11px] text-[#c5a77a] mt-0.5 font-medium">Base: {displayPrice}</span>
                       </div>

@@ -9,9 +9,14 @@ import React, { useState, useEffect } from 'react';
 import { getParts } from '../services/api.js';
 import indianParts from '../data/parts.js';
 
-const partImageFallback = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1000&q=85';
+const partImageFallback = 'https://images.unsplash.com/photo-1600705722908-bab1e61c0b4d?auto=format&fit=crop&w=800&q=85';
 
-export default function PartsSection({ userState, onSelectPartOrder }) {
+export default function PartsSection({
+  userState,
+  onSelectPartOrder,
+  selectedComparePartIds = [],
+  onToggleComparePart,
+}) {
   const [parts, setParts] = useState(indianParts);
   const [loading, setLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState('all');
@@ -187,15 +192,27 @@ export default function PartsSection({ userState, onSelectPartOrder }) {
                     )}
                   </div>
 
-                  <button
-                    type="button"
-                    className="button button-gold-sm part-order-btn w-full py-2.5 px-4 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer mt-auto flex items-center justify-center gap-2"
-                    onClick={() => {
-                      onSelectPartOrder(part);
-                    }}
-                  >
-                    Ask about this item <span aria-hidden="true">↗</span>
-                  </button>
+                  <div className="flex gap-2 mt-auto">
+                    <button
+                      type="button"
+                      className="button button-gold-sm part-order-btn flex-1 py-2.5 px-3 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                      onClick={() => onSelectPartOrder(part)}
+                    >
+                      Inquire <span aria-hidden="true">↗</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`flex-1 py-2.5 px-3 font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer border ${
+                        selectedComparePartIds.includes(part.id)
+                          ? 'bg-[#c5a77a] text-[#11120f] border-[#c5a77a] font-bold'
+                          : 'bg-white/5 hover:bg-white/10 text-white border-white/20'
+                      }`}
+                      onClick={() => onToggleComparePart && onToggleComparePart(part)}
+                      title="Select part to compare side-by-side"
+                    >
+                      {selectedComparePartIds.includes(part.id) ? '✓ In Compare' : '+ Compare'}
+                    </button>
+                  </div>
                 </div>
               </div>
             );

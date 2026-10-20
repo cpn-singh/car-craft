@@ -1,6 +1,12 @@
 from rest_framework import viewsets, permissions, filters
+from rest_framework.response import Response
 from .models import PartCategory, Part, Order, DealerPartPrice
 from .serializers import PartCategorySerializer, PartSerializer, OrderSerializer, DealerPartPriceSerializer
+from dealership_core.ai_web_searcher import (
+    search_internet_automotive,
+    INTERNET_PARTS_CATALOG,
+    ground_part_with_location
+)
 
 
 class PartCategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -16,6 +22,31 @@ class PartViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'sku', 'compatibility', 'brand', 'description']
     ordering_fields = ['price', 'name', 'stock']
+
+    def list(self, request, *args, **kwargs):
+        """
+        Dynamically retrieves genuine parts & accessories from AI internet search grounded by user location.
+        """
+        state = request.query_params.get('state', 'Maharashtra')
+        query = request.query_params.get('search', '') or request.query_params.get('q', '')
+        item_type = request.query_params.get('item_type')
+        category_type = 'accessories' if item_type == 'ACCESSORY' else ('parts' if item_type == 'SPARE_PART' else 'all')
+
+        search_res = search_internet_automotive(
+            query=query,
+            category_type=category_type,
+            state=state if state != 'All India' else 'Maharashtra'
+        )
+        parts_list = search_res['results']['accessories'] + search_res['results']['parts']
+        return Response(parts_list)
+
+    def retrieve(self, request, *args, **kwargs):
+        lookup_id = kwargs.get('pk')
+        state = request.query_params.get('state', 'Maharashtra')
+        match = next((p for p in INTERNET_PARTS_CATALOG if str(p['id']) == str(lookup_id)), None)
+        if match:
+            return Response(ground_part_with_location(match, state if state != 'All India' else 'Maharashtra'))
+        return super().retrieve(request, *args, **kwargs)
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()

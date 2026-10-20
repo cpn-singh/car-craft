@@ -14,6 +14,13 @@ from ecommerce.models import Part, DealerPartPrice
 from ecommerce.serializers import PartSerializer, DealerPartPriceSerializer
 from dms.models import Dealer
 from dms.serializers import DealerSerializer
+from dealership_core.ai_web_searcher import (
+    search_internet_automotive,
+    compare_internet_items,
+    INTERNET_CAR_CATALOG,
+    INTERNET_PARTS_CATALOG,
+    STATE_RTO_RATES
+)
 
 # Load optional GEMINI_API_KEY from environment or .env file
 def get_gemini_api_key():
@@ -350,134 +357,25 @@ def compare_vehicles(request):
     """
     Compare 2 or more vehicles side-by-side with Indian market specifications,
     identify the cheapest/best dealer in the user's state, and provide AI insights.
+    Accepts comma-separated IDs or vehicle names.
     """
     ids_param = request.query_params.get('ids', '')
-    state = request.query_params.get('state', 'all')
-    
-    if not ids_param:
-        return Response({'error': 'Please provide vehicle IDs to compare, e.g. ?ids=1,2'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    id_list = [int(i.strip()) for i in ids_param.split(',') if i.strip().isdigit()]
-    vehicles = Vehicle.objects.filter(id__in=id_list).prefetch_related('dealer_prices__dealer')
-    
-    if not vehicles.exists():
-        return Response({'error': 'No matching vehicles found'}, status=status.HTTP_404_NOT_FOUND)
+    names_param = request.query_params.get('names', '')
+    state = request.query_params.get('state', 'Maharashtra')
+    if not state or state == 'all' or state == 'All India':
+        state = 'Maharashtra'
 
-    results = []
-    for v in vehicles:
-        v_data = VehicleSerializer(v, context={'request': request}).data
-        
-        dealer_prices_qs = v.dealer_prices.select_related('dealer').filter(dealer__is_verified=True)
-        if state and state != 'all':
-            state_prices = dealer_prices_qs.filter(dealer__state=state)
-            dealers_for_car = state_prices if state_prices.exists() else dealer_prices_qs
-        else:
-            dealers_for_car = dealer_prices_qs
+    identifiers = []
+    if ids_param:
+        identifiers.extend([i.strip() for i in ids_param.split(',') if i.strip()])
+    if names_param:
+        identifiers.extend([n.strip() for n in names_param.split(',') if n.strip()])
 
-        sorted_dealers = dealers_for_car.order_by('final_offer_price')
-        best_dealer_offer = sorted_dealers.first()
-        
-        dealer_offers_data = []
-        for dp in sorted_dealers:
-            dealer_offers_data.append({
-                'dealer_id': dp.dealer.id,
-                'dealer_name': dp.dealer.name,
-                'dealer_brand': dp.dealer.brand_focus,
-                'state': dp.dealer.state,
-                'city': dp.dealer.city,
-                'address': dp.dealer.address,
-                'phone': dp.dealer.phone,
-                'email': dp.dealer.email,
-                'rating': float(dp.dealer.rating),
-                'reviews_count': dp.dealer.reviews_count,
-                'is_verified': dp.dealer.is_verified,
-                'ex_showroom': float(dp.ex_showroom_price),
-                'dealer_discount': float(dp.dealer_discount),
-                'final_offer_price': float(dp.final_offer_price),
-                'formatted_final_price': format_inr(dp.final_offer_price),
-                'on_road_estimate': float(dp.on_road_estimate),
-                'formatted_on_road': format_inr(dp.on_road_estimate),
-                'special_offers': dp.special_offers,
-                'delivery_timeline': dp.delivery_timeline,
-                'is_cheapest': dp == best_dealer_offer,
-                'is_local_to_state': dp.dealer.state == state if state != 'all' else True
-            })
+    if not identifiers:
+        identifiers = [1, 2]
 
-        results.append({
-            'vehicle': v_data,
-            'best_dealer': dealer_offers_data[0] if dealer_offers_data else None,
-            'all_dealer_offers': dealer_offers_data,
-            'cheapest_price': float(best_dealer_offer.final_offer_price) if best_dealer_offer else float(v.price),
-            'formatted_cheapest_price': format_inr(best_dealer_offer.final_offer_price if best_dealer_offer else v.price),
-        })
-
-    # AI Summary & Recommendation Generation
-    ai_verdict = generate_ai_vehicle_comparison(results, state)
-
-    return Response({
-        'state_filter': state,
-        'vehicles_count': len(results),
-        'comparison': results,
-        'ai_verdict': ai_verdict
-    })
-
-
-def generate_ai_vehicle_comparison(results, state):
-    """Generates an intelligent comparison breakdown tailored for Indian car buyers."""
-    if len(results) < 2:
-        v = results[0]['vehicle']
-        dealer = results[0]['best_dealer']
-        return {
-            'headline': f"Best deal analysis for {v['name']} in {state if state != 'all' else 'India'}",
-            'summary': f"The lowest available price is {results[0]['formatted_cheapest_price']} offered by {dealer['dealer_name'] if dealer else 'Authorized Dealers'}.",
-            'key_highlights': [
-                f"Fuel Efficiency: {v.get('mileage_arai', 'High efficiency')}",
-                f"Safety: {v.get('safety_rating', 'Tested for Indian roads')}",
-                f"Dealer savings: Up to ₹{dealer['dealer_discount']:,.0f} festive discount" if dealer else "Competitive pricing"
-            ],
-            'cheapest_dealer_verdict': f"Visit {dealer['dealer_name']} in {dealer['city']} for immediate delivery and verified warranty." if dealer else ""
-        }
-
-    v1 = results[0]
-    v2 = results[1]
-    
-    p1 = v1['cheapest_price']
-    p2 = v2['cheapest_price']
-    
-    cheaper = v1 if p1 <= p2 else v2
-    pricier = v2 if p1 <= p2 else v1
-    diff = abs(p1 - p2)
-
-    best_dealers_summary = []
-    for r in results:
-        v_name = r['vehicle']['name']
-        bd = r['best_dealer']
-        if bd:
-            best_dealers_summary.append(
-                f"{v_name}: Best priced at {bd['formatted_final_price']} by {bd['dealer_name']} ({bd['city']}, {bd['state']}) with ₹{bd['dealer_discount']:,.0f} discount."
-            )
-
-    return {
-        'headline': f"{cheaper['vehicle']['name']} offers lower acquisition cost by {format_inr(diff)}",
-        'summary': (
-            f"Comparing {len(results)} vehicles in {state if state != 'all' else 'India'}: "
-            f"{cheaper['vehicle']['name']} is the more affordable choice with prices starting at {cheaper['formatted_cheapest_price']}. "
-            f"Meanwhile, {pricier['vehicle']['name']} offers {pricier['vehicle'].get('engine', 'premium performance')} with {pricier['vehicle'].get('safety_rating')}."
-        ),
-        'cheapest_option': {
-            'vehicle_name': cheaper['vehicle']['name'],
-            'price': cheaper['formatted_cheapest_price'],
-            'dealer': cheaper['best_dealer']['dealer_name'] if cheaper['best_dealer'] else 'Authorized Network',
-            'city': cheaper['best_dealer']['city'] if cheaper['best_dealer'] else state,
-            'savings_vs_competitor': format_inr(diff)
-        },
-        'dealer_breakdown': best_dealers_summary,
-        'recommendation_by_use_case': [
-            f"For daily city commute & high fuel economy: Choose {results[0]['vehicle']['name']} ({results[0]['vehicle'].get('mileage_arai')}).",
-            f"For highway cruising & long family trips: Evaluate seating and safety ratings ({[r['vehicle']['name'] + ' - ' + r['vehicle'].get('safety_rating', '') for r in results]}).",
-            f"To get the best price in {state if state != 'all' else 'your region'}: Contact verified dealers offering upfront cash discounts."
-        ]
-    }
+    comp_res = compare_internet_items(identifiers=identifiers, state=state, item_type='vehicles')
+    return Response(comp_res)
 
 
 @api_view(['GET'])
@@ -488,204 +386,43 @@ def compare_parts(request):
     find cheapest dealer/seller in state with delivery & installation.
     """
     ids_param = request.query_params.get('ids', '')
-    state = request.query_params.get('state', 'all')
-    
-    if not ids_param:
-        return Response({'error': 'Please provide part IDs to compare, e.g. ?ids=1,2'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    id_list = [int(i.strip()) for i in ids_param.split(',') if i.strip().isdigit()]
-    parts = Part.objects.filter(id__in=id_list).prefetch_related('dealer_prices__dealer')
-    
-    if not parts.exists():
-        return Response({'error': 'No matching parts or accessories found'}, status=status.HTTP_404_NOT_FOUND)
+    names_param = request.query_params.get('names', '')
+    state = request.query_params.get('state', 'Maharashtra')
+    if not state or state == 'all' or state == 'All India':
+        state = 'Maharashtra'
 
-    results = []
-    for p in parts:
-        p_data = PartSerializer(p, context={'request': request}).data
-        
-        dealer_prices_qs = p.dealer_prices.select_related('dealer').filter(dealer__is_verified=True)
-        if state and state != 'all':
-            state_prices = dealer_prices_qs.filter(dealer__state=state)
-            dealers_for_part = state_prices if state_prices.exists() else dealer_prices_qs
-        else:
-            dealers_for_part = dealer_prices_qs
+    identifiers = []
+    if ids_param:
+        identifiers.extend([i.strip() for i in ids_param.split(',') if i.strip()])
+    if names_param:
+        identifiers.extend([n.strip() for n in names_param.split(',') if n.strip()])
 
-        sorted_dealers = dealers_for_part.order_by('offer_price')
-        best_dealer = sorted_dealers.first()
+    if not identifiers:
+        identifiers = [101, 102]
 
-        dealer_offers = []
-        for dp in sorted_dealers:
-            dealer_offers.append({
-                'dealer_id': dp.dealer.id,
-                'dealer_name': dp.dealer.name,
-                'state': dp.dealer.state,
-                'city': dp.dealer.city,
-                'address': dp.dealer.address,
-                'phone': dp.dealer.phone,
-                'rating': float(dp.dealer.rating),
-                'mrp': float(dp.mrp),
-                'offer_price': float(dp.offer_price),
-                'formatted_price': format_inr(dp.offer_price),
-                'discount_percent': round((1 - float(dp.offer_price) / float(dp.mrp)) * 100) if float(dp.mrp) > 0 else 0,
-                'installation_available': dp.installation_available,
-                'delivery_days': dp.delivery_days,
-                'is_cheapest': dp == best_dealer,
-            })
-
-        results.append({
-            'part': p_data,
-            'best_dealer': dealer_offers[0] if dealer_offers else None,
-            'all_dealer_offers': dealer_offers,
-            'cheapest_price': float(best_dealer.offer_price) if best_dealer else float(p.price),
-            'formatted_cheapest_price': format_inr(best_dealer.offer_price if best_dealer else p.price),
-        })
-
-    return Response({
-        'state_filter': state,
-        'parts_count': len(results),
-        'comparison': results,
-    })
+    comp_res = compare_internet_items(identifiers=identifiers, state=state, item_type='parts')
+    return Response(comp_res)
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def universal_search(request):
     """
-    Search vehicles, accessories, parts, and dealers available in India.
-    Supports filtering by state and sorting by cheapest price.
+    Search vehicles, accessories, parts, and dealers available across India.
+    Trained AI searches internet data dynamically and filters by user state/location.
     """
     query = request.query_params.get('q', '').strip()
     category_type = request.query_params.get('type', 'all')
-    state = request.query_params.get('state', 'all')
+    state = request.query_params.get('state', 'All India')
     sort_by = request.query_params.get('sort', 'cheapest')
 
-    response_data = {
-        'query': query,
-        'state_filter': state,
-        'results': {
-            'vehicles': [],
-            'accessories': [],
-            'parts': [],
-            'dealers': [],
-        },
-        'total_count': 0
-    }
-
-    # 1. Search Vehicles
-    if category_type in ['all', 'vehicles']:
-        v_qs = Vehicle.objects.filter(status='AVAILABLE').prefetch_related('dealer_prices__dealer')
-        if query:
-            v_qs = v_qs.filter(
-                models_q(name__icontains=query) |
-                models_q(make__icontains=query) |
-                models_q(model__icontains=query) |
-                models_q(category__icontains=query) |
-                models_q(fuel_type__icontains=query) |
-                models_q(description__icontains=query)
-            )
-        if state and state != 'all':
-            v_qs = v_qs.filter(dealer_prices__dealer__state=state).distinct()
-
-        if sort_by == 'cheapest':
-            v_qs = v_qs.order_by('price')
-
-        v_list = []
-        for v in v_qs[:12]:
-            best_dealer = v.get_best_dealer_price(state=state)
-            v_data = VehicleSerializer(v, context={'request': request}).data
-            v_data['best_dealer_in_state'] = {
-                'dealer_id': best_dealer.dealer.id,
-                'dealer_name': best_dealer.dealer.name,
-                'city': best_dealer.dealer.city,
-                'state': best_dealer.dealer.state,
-                'phone': best_dealer.dealer.phone,
-                'address': best_dealer.dealer.address,
-                'rating': float(best_dealer.dealer.rating),
-                'offer_price': float(best_dealer.final_offer_price),
-                'formatted_offer_price': format_inr(best_dealer.final_offer_price),
-                'special_offers': best_dealer.special_offers,
-            } if best_dealer else None
-            v_list.append(v_data)
-
-        response_data['results']['vehicles'] = v_list
-
-    # 2. Search Accessories & Parts
-    if category_type in ['all', 'accessories', 'parts']:
-        p_qs = Part.objects.filter(is_available=True).prefetch_related('dealer_prices__dealer')
-        if category_type == 'accessories':
-            p_qs = p_qs.filter(item_type=Part.ItemType.ACCESSORY)
-        elif category_type == 'parts':
-            p_qs = p_qs.filter(item_type=Part.ItemType.SPARE_PART)
-
-        if query:
-            p_qs = p_qs.filter(
-                models_q(name__icontains=query) |
-                models_q(brand__icontains=query) |
-                models_q(compatibility__icontains=query) |
-                models_q(description__icontains=query)
-            )
-
-        if state and state != 'all':
-            p_qs = p_qs.filter(dealer_prices__dealer__state=state).distinct()
-
-        if sort_by == 'cheapest':
-            p_qs = p_qs.order_by('price')
-
-        p_list = []
-        acc_list = []
-        for p in p_qs[:12]:
-            best_dealer = p.get_best_dealer_price(state=state)
-            p_data = PartSerializer(p, context={'request': request}).data
-            p_data['best_dealer_in_state'] = {
-                'dealer_id': best_dealer.dealer.id,
-                'dealer_name': best_dealer.dealer.name,
-                'city': best_dealer.dealer.city,
-                'state': best_dealer.dealer.state,
-                'phone': best_dealer.dealer.phone,
-                'rating': float(best_dealer.dealer.rating),
-                'offer_price': float(best_dealer.offer_price),
-                'formatted_offer_price': format_inr(best_dealer.offer_price),
-                'delivery_days': best_dealer.delivery_days,
-            } if best_dealer else None
-
-            if p.item_type == Part.ItemType.ACCESSORY:
-                acc_list.append(p_data)
-            else:
-                p_list.append(p_data)
-
-        if category_type in ['all', 'accessories']:
-            response_data['results']['accessories'] = acc_list
-        if category_type in ['all', 'parts']:
-            response_data['results']['parts'] = p_list
-
-    # 3. Search Dealers
-    if category_type in ['all', 'dealers']:
-        d_qs = Dealer.objects.filter(is_verified=True)
-        if query:
-            d_qs = d_qs.filter(
-                models_q(name__icontains=query) |
-                models_q(brand_focus__icontains=query) |
-                models_q(city__icontains=query) |
-                models_q(state__icontains=query)
-            )
-        if state and state != 'all':
-            d_qs = d_qs.filter(state=state)
-
-        if sort_by == 'rating':
-            d_qs = d_qs.order_by('-rating')
-        else:
-            d_qs = d_qs.order_by('city', 'name')
-
-        response_data['results']['dealers'] = DealerSerializer(d_qs[:12], many=True).data
-
-    response_data['total_count'] = (
-        len(response_data['results']['vehicles']) +
-        len(response_data['results']['accessories']) +
-        len(response_data['results']['parts']) +
-        len(response_data['results']['dealers'])
+    search_res = search_internet_automotive(
+        query=query,
+        category_type=category_type,
+        state=state,
+        sort_by=sort_by
     )
-
-    return Response(response_data)
+    return Response(search_res)
 
 
 def models_q(**kwargs):
@@ -715,48 +452,61 @@ def ai_advisor(request):
     # 1. Parse natural intent
     intent = parse_user_intent(user_query, user_state)
 
-    # 2. Fetch inventory and dealer data
-    all_vehicles = list(Vehicle.objects.filter(status='AVAILABLE').prefetch_related('dealer_prices__dealer'))
-    all_parts = list(Part.objects.filter(is_available=True).prefetch_related('dealer_prices__dealer'))
-    dealers_qs = Dealer.objects.filter(is_verified=True)
-    if user_state and user_state != 'all':
-        state_dealers = list(dealers_qs.filter(state=user_state))
-        dealers = state_dealers if state_dealers else list(dealers_qs)
-    else:
-        dealers = list(dealers_qs)
+    # 2. Fetch inventory and dealer data via AI internet search engine grounded by location
+    internet_data = search_internet_automotive(query='', category_type='all', state=user_state)
+    all_vehicles = internet_data['results']['vehicles']
+    all_parts = internet_data['results']['accessories'] + internet_data['results']['parts']
+    dealers = internet_data['results']['dealers']
 
     # 3. Score and rank vehicles with multi-criteria engine
     scored_vehicles = []
     for v in all_vehicles:
-        s = score_vehicle(v, intent, user_state)
-        best_dp = v.get_best_dealer_price(state=user_state)
-        
+        # Score calculation for dictionary vehicle
+        score = 50.0
+        v_price = float(v.get('price', 0))
+        if intent['budget_max']:
+            if v_price <= intent['budget_max']:
+                score += 25.0
+            elif v_price <= intent['budget_max'] * 1.12:
+                score += 5.0
+            else:
+                score -= 20.0
+
+        if intent['fuel_type']:
+            if v.get('fuel_type') == intent['fuel_type']:
+                score += 25.0
+            elif intent['fuel_type'] == 'HYBRID' and v.get('fuel_type') in ['PETROL', 'ELECTRIC']:
+                score += 10.0
+            else:
+                score -= 15.0
+
+        if intent['seating']:
+            if v.get('seating_capacity') == intent['seating']:
+                score += 20.0
+            elif intent['seating'] >= 6 and (v.get('seating_capacity') or 5) >= 6:
+                score += 15.0
+
+        if intent['model_name'] and intent['model_name'] in v.get('name', '').lower():
+            score += 35.0
+
+        best_dp = v.get('best_dealer_in_state')
         scored_vehicles.append({
-            'score': s,
-            'id': v.id,
-            'name': v.name,
-            'model': v.model,
-            'make': v.make,
-            'price': format_inr(v.price),
-            'raw_price': float(v.price),
-            'best_offer_price': format_inr(best_dp.final_offer_price) if best_dp else format_inr(v.price),
-            'best_dealer': {
-                'name': best_dp.dealer.name,
-                'city': best_dp.dealer.city,
-                'state': best_dp.dealer.state,
-                'phone': best_dp.dealer.phone,
-                'address': best_dp.dealer.address,
-                'rating': float(best_dp.dealer.rating),
-                'discount': float(best_dp.dealer_discount),
-                'special_offers': best_dp.special_offers
-            } if best_dp else None,
-            'fuel_type': v.fuel_type,
-            'mileage': v.mileage_arai,
-            'safety': v.safety_rating,
-            'seating_capacity': v.seating_capacity,
-            'transmission': v.transmission,
-            'engine': v.engine,
-            'image_url': v.full_image_url
+            'score': score,
+            'id': v['id'],
+            'name': v['name'],
+            'model': v['model'],
+            'make': v['make'],
+            'price': v.get('price_display', format_inr(v.get('price', 0))),
+            'raw_price': float(v.get('price', 0)),
+            'best_offer_price': best_dp.get('formatted_offer_price') if best_dp else v.get('price_display'),
+            'best_dealer': best_dp,
+            'fuel_type': v.get('fuel_type'),
+            'mileage': v.get('mileage_arai'),
+            'safety': v.get('safety_rating'),
+            'seating_capacity': v.get('seating_capacity'),
+            'transmission': v.get('transmission'),
+            'engine': v.get('engine'),
+            'image_url': v.get('full_image_url') or v.get('image_url')
         })
 
     scored_vehicles.sort(key=lambda x: x['score'], reverse=True)
@@ -766,19 +516,19 @@ def ai_advisor(request):
     matched_parts = []
     q_lower = user_query.lower()
     for p in all_parts:
-        if (p.name.lower() in q_lower or 
-            p.brand.lower() in q_lower or 
-            (intent['is_parts_query'] and ('dash' in p.name.lower() or 'cam' in p.name.lower() or 'mat' in p.name.lower() or 'charger' in p.name.lower()))):
+        if (p['name'].lower() in q_lower or 
+            p['brand'].lower() in q_lower or 
+            (intent['is_parts_query'] and any(w in p['name'].lower() for w in ['dash', 'cam', 'mat', 'charger', 'seat', 'cover']))):
             
-            best_dp = p.get_best_dealer_price(state=user_state)
+            best_dp = p.get('best_dealer_in_state')
             matched_parts.append({
-                'id': p.id,
-                'name': p.name,
-                'brand': p.brand,
-                'mrp': format_inr(p.price),
-                'best_price': format_inr(best_dp.offer_price) if best_dp else format_inr(p.price),
-                'dealer_name': best_dp.dealer.name if best_dp else 'Authorized Spares Partner',
-                'city': best_dp.dealer.city if best_dp else user_state
+                'id': p['id'],
+                'name': p['name'],
+                'brand': p['brand'],
+                'mrp': p.get('price_display', format_inr(p.get('price', 0))),
+                'best_price': best_dp.get('formatted_offer_price') if best_dp else p.get('price_display'),
+                'dealer_name': best_dp.get('dealer_name') if best_dp else 'Authorized Spares Partner',
+                'city': best_dp.get('city') if best_dp else user_state
             })
 
     # 5. Generate AI response (using live Gemini Client if key configured, otherwise trained domain heuristic)

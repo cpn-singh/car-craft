@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { getVehicles } from '../services/api.js';
 import indianCars from '../data/cars.js';
 
-function VehicleCard({ car, onInquire, onCompare }) {
+function VehicleCard({ car, onInquire, onCompare, isSelectedForCompare, onToggleCompare }) {
   function tiltImage(event) {
     if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
 
@@ -40,7 +40,9 @@ function VehicleCard({ car, onInquire, onCompare }) {
 
   return (
     <article
-      className="car-card min-w-0 flex flex-col bg-[#dfdcd3] border border-black/10 rounded-sm overflow-hidden p-4 group transition-all duration-300 hover:shadow-xl hover:border-black/20"
+      className={`car-card min-w-0 flex flex-col bg-[#dfdcd3] border rounded-sm overflow-hidden p-4 group transition-all duration-300 hover:shadow-xl ${
+        isSelectedForCompare ? 'border-[#c5a77a] ring-2 ring-[#c5a77a]/50' : 'border-black/10 hover:border-black/20'
+      }`}
       data-type={car.category}
     >
       <button
@@ -57,6 +59,10 @@ function VehicleCard({ car, onInquire, onCompare }) {
           alt={car.alt_text || car.name}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1100&q=85';
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
         <span className="car-number absolute top-3 left-3 bg-[#11120f]/85 backdrop-blur-xs text-white text-[9px] px-2 py-0.5 rounded-full font-medium tracking-wider uppercase">
@@ -117,21 +123,32 @@ function VehicleCard({ car, onInquire, onCompare }) {
           className="button button-gold-sm flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer"
           onClick={() => onInquire(car)}
         >
-          Get Dealer Quote ↗
+          Get Quote ↗
         </button>
         <button
           type="button"
-          className="button button-outline-sm flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 bg-transparent hover:bg-black/5 text-[#181916] border border-black/30 font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer"
-          onClick={() => onCompare(car)}
+          className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer border ${
+            isSelectedForCompare
+              ? 'bg-[#181916] text-[#c5a77a] border-[#181916] shadow-sm'
+              : 'bg-transparent hover:bg-black/5 text-[#181916] border-black/30'
+          }`}
+          onClick={() => onToggleCompare ? onToggleCompare(car) : onCompare(car)}
+          title="Select to compare side-by-side"
         >
-          Compare
+          {isSelectedForCompare ? '✓ In Compare' : '+ Compare'}
         </button>
       </div>
     </article>
   );
 }
 
-export default function Collection({ userState, onInquireVehicle, onOpenCompare }) {
+export default function Collection({
+  userState,
+  onInquireVehicle,
+  onOpenCompare,
+  selectedCompareIds = [],
+  onToggleCompareCar,
+}) {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [vehicles, setVehicles] = useState(indianCars);
   const [loading, setLoading] = useState(false);
@@ -248,6 +265,8 @@ export default function Collection({ userState, onInquireVehicle, onOpenCompare 
                   car={car}
                   onInquire={onInquireVehicle}
                   onCompare={() => onOpenCompare(car.id)}
+                  isSelectedForCompare={selectedCompareIds.includes(car.id)}
+                  onToggleCompare={() => onToggleCompareCar && onToggleCompareCar(car)}
                 />
               </div>
             );

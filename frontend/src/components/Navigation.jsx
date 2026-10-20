@@ -15,6 +15,9 @@ export default function Navigation({
   onOpenCompare,
   onOpenSearch,
   onOpenAdvisor,
+  currentUser,
+  onOpenAuth,
+  onLogout,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -117,6 +120,35 @@ export default function Navigation({
             Talk to a dealer <span className="text-[#c5a77a]">↗</span>
           </button>
 
+          {/* User Profile / Sign In Pill */}
+          {currentUser ? (
+            <div className="hidden sm:flex items-center gap-2 bg-white/5 border border-[#c5a77a]/40 px-3 py-1.5 rounded-full">
+              <span className="w-5 h-5 rounded-full bg-[#c5a77a] text-[#11120f] font-bold text-[10px] flex items-center justify-center">
+                {(currentUser.first_name || currentUser.username || 'U')[0].toUpperCase()}
+              </span>
+              <span className="text-[11px] text-white font-medium max-w-[90px] truncate">
+                {currentUser.first_name || currentUser.username}
+              </span>
+              <button
+                type="button"
+                onClick={onLogout}
+                className="text-[10px] uppercase tracking-wider text-[#aaa] hover:text-[#c5a77a] ml-1 transition-colors cursor-pointer"
+                title="Sign out"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onOpenAuth && onOpenAuth('login')}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#c5a77a]/15 hover:bg-[#c5a77a]/25 border border-[#c5a77a]/60 text-[#c5a77a] hover:text-white rounded-full text-[11px] uppercase tracking-wider font-semibold transition-colors cursor-pointer"
+            >
+              <span>👤</span>
+              <span>Sign In</span>
+            </button>
+          )}
+
           {/* Hamburger Menu Toggle */}
           <button
             className="menu-toggle md:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 bg-transparent border-0 cursor-pointer p-0"
@@ -213,6 +245,37 @@ export default function Navigation({
 
         {/* Action Buttons grouped at the bottom of the drawer */}
         <div className="mobile-drawer-actions flex flex-col gap-2.5 mt-auto pt-6">
+          {currentUser ? (
+            <div className="p-3 bg-white/5 border border-[#c5a77a]/40 rounded-xs flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-[#c5a77a] text-[#11120f] font-bold text-xs flex items-center justify-center">
+                  {(currentUser.first_name || currentUser.username || 'U')[0].toUpperCase()}
+                </span>
+                <div>
+                  <div className="text-xs text-white font-medium">{currentUser.first_name || currentUser.username}</div>
+                  <div className="text-[10px] text-[#c5a77a]">{currentUser.city || currentUser.state}</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => { closeMenu(); onLogout(); }}
+                className="text-xs text-white/60 hover:text-white uppercase font-semibold"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="button mobile-action-btn w-full min-h-[42px] px-4 inline-flex items-center justify-center gap-2 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer"
+              onClick={() => {
+                closeMenu();
+                if (onOpenAuth) onOpenAuth('login');
+              }}
+            >
+              <span>👤</span> Sign In / Register
+            </button>
+          )}
           <button
             type="button"
             className="button button-gold mobile-action-btn w-full min-h-[42px] px-4 inline-flex items-center justify-center gap-2 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer"

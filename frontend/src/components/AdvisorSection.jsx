@@ -163,7 +163,15 @@ export default function AdvisorSection({ userState, onSelectInquiry }) {
                     <div className="recs-card-grid grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                       {msg.vehicles.map((v) => (
                         <div className="rec-vehicle-card bg-[#141714] border border-white/10 rounded-xs overflow-hidden p-3.5 text-xs flex flex-col justify-between" key={v.id}>
-                          {v.image_url && <img src={v.image_url} alt={v.name} className="rec-img w-full h-32 object-cover rounded-xs mb-2" />}
+                          <img
+                            src={v.image_url || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85'}
+                            alt={v.name}
+                            className="rec-img w-full h-32 object-cover rounded-xs mb-2 bg-black/40"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85';
+                            }}
+                          />
                           <div className="rec-body space-y-1">
                             <h4 className="font-semibold text-white text-sm">{v.name}</h4>
                             <span className="rec-price text-[#c5a77a] font-bold block">{v.price} · {v.fuel_type}</span>

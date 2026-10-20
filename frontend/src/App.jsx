@@ -14,9 +14,13 @@ import BookingModal from './components/BookingModal.jsx';
 import CompareModal from './components/CompareModal.jsx';
 import SearchModal from './components/SearchModal.jsx';
 import AiAdvisorModal from './components/AiAdvisorModal.jsx';
+import AuthModal from './components/AuthModal.jsx';
+import CompareFloatingBar from './components/CompareFloatingBar.jsx';
+import { getCurrentUser, logoutUser } from './services/api.js';
 
 export default function App() {
-  const [userState, setUserState] = useState('Maharashtra');
+  const [currentUser, setCurrentUser] = useState(getCurrentUser());
+  const [userState, setUserState] = useState(currentUser?.state || 'Maharashtra');
 
   // Modals
   const [isFilmOpen, setIsFilmOpen] = useState(false);
@@ -24,10 +28,17 @@ export default function App() {
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAdvisorOpen, setIsAdvisorOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authInitialTab, setAuthInitialTab] = useState('login');
 
   const [bookingTab, setBookingTab] = useState('inquiry');
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
+  // Compare multi-select state
+  const [compareMode, setCompareMode] = useState('vehicles'); // 'vehicles' | 'parts'
+  const [selectedCompareCars, setSelectedCompareCars] = useState([]);
+  const [selectedCompareParts, setSelectedCompareParts] = useState([]);
+  const [compareModalInitialIds, setCompareModalInitialIds] = useState(null);
   const [compareInitialVehicleId, setCompareInitialVehicleId] = useState(null);
 
   function handleOpenModal(tab = 'inquiry', vehicle = null) {
@@ -47,8 +58,86 @@ export default function App() {
   function handleOpenCompare(vehicleId = null) {
     if (vehicleId) {
       setCompareInitialVehicleId(vehicleId);
+      setCompareModalInitialIds([Number(vehicleId)]);
+      setCompareMode('vehicles');
+    } else if (selectedCompareCars.length > 0) {
+      setCompareModalInitialIds(selectedCompareCars.map((c) => c.id));
+      setCompareMode('vehicles');
+    } else {
+      setCompareModalInitialIds(null);
     }
     setIsCompareOpen(true);
+  }
+
+  function handleToggleCompareCar(car) {
+    setCompareMode('vehicles');
+    setSelectedCompareCars((prev) => {
+      const exists = prev.some((c) => c.id === car.id);
+      if (exists) {
+        return prev.filter((c) => c.id !== car.id);
+      }
+      if (prev.length >= 3) {
+        return [...prev.slice(1), { id: car.id, name: car.name, image: car.full_image_url }];
+      }
+      return [...prev, { id: car.id, name: car.name, image: car.full_image_url }];
+    });
+  }
+
+  function handleToggleComparePart(part) {
+    setCompareMode('parts');
+    setSelectedCompareParts((prev) => {
+      const exists = prev.some((p) => p.id === part.id);
+      if (exists) {
+        return prev.filter((p) => p.id !== part.id);
+      }
+      if (prev.length >= 3) {
+        return [...prev.slice(1), { id: part.id, name: part.name, image: part.image_url }];
+      }
+      return [...prev, { id: part.id, name: part.name, image: part.image_url }];
+    });
+  }
+
+  function handleRemoveCompareItem(id) {
+    if (compareMode === 'vehicles') {
+      setSelectedCompareCars((prev) => prev.filter((item) => item.id !== id));
+    } else {
+      setSelectedCompareParts((prev) => prev.filter((item) => item.id !== id));
+    }
+  }
+
+  function handleClearCompare() {
+    if (compareMode === 'vehicles') {
+      setSelectedCompareCars([]);
+    } else {
+      setSelectedCompareParts([]);
+    }
+  }
+
+  function handleLaunchMultiCompare() {
+    if (compareMode === 'vehicles' && selectedCompareCars.length > 0) {
+      setCompareModalInitialIds(selectedCompareCars.map((c) => c.id));
+    } else if (compareMode === 'parts' && selectedCompareParts.length > 0) {
+      setCompareModalInitialIds(selectedCompareParts.map((p) => p.id));
+    }
+    setIsCompareOpen(true);
+  }
+
+  // Auth handlers
+  function handleOpenAuth(initialTab = 'login') {
+    setAuthInitialTab(initialTab);
+    setIsAuthOpen(true);
+  }
+
+  function handleAuthSuccess(user) {
+    setCurrentUser(user);
+    if (user?.state && user.state !== 'All India') {
+      setUserState(user.state);
+    }
+  }
+
+  function handleLogout() {
+    logoutUser();
+    setCurrentUser(null);
   }
 
   const [searchInitialQuery, setSearchInitialQuery] = useState('');
@@ -102,7 +191,7 @@ export default function App() {
     };
   }, []);
 
-  const anyModalOpen = isFilmOpen || isBookingOpen || isCompareOpen || isSearchOpen || isAdvisorOpen;
+  const anyModalOpen = isFilmOpen || isBookingOpen || isCompareOpen || isSearchOpen || isAdvisorOpen || isAuthOpen;
 
   useEffect(() => {
     // Clear any stuck inline overflow from previous sessions
@@ -122,7 +211,7 @@ export default function App() {
 
   return (
     <>
-      {/* Navigation with Indian State Selector */}
+      {/* Navigation with Indian State Selector and User Auth */}
       <Navigation
         userState={userState}
         onStateChange={setUserState}
@@ -130,6 +219,9 @@ export default function App() {
         onOpenCompare={() => handleOpenCompare()}
         onOpenSearch={() => handleOpenSearchWithQuery()}
         onOpenAdvisor={() => setIsAdvisorOpen(true)}
+        currentUser={currentUser}
+        onOpenAuth={handleOpenAuth}
+        onLogout={handleLogout}
       />
 
       <main className="min-h-screen">
@@ -149,6 +241,8 @@ export default function App() {
           userState={userState}
           onInquireVehicle={handleInquireVehicle}
           onOpenCompare={handleOpenCompare}
+          selectedCompareIds={selectedCompareCars.map((c) => c.id)}
+          onToggleCompareCar={handleToggleCompareCar}
         />
 
         {/* 2. In-Page Interactive AI Vehicle & Best Dealer Comparison */}
@@ -162,6 +256,8 @@ export default function App() {
         <PartsSection
           userState={userState}
           onSelectPartOrder={handleSelectPartOrder}
+          selectedComparePartIds={selectedCompareParts.map((p) => p.id)}
+          onToggleComparePart={handleToggleComparePart}
         />
 
         {/* 4. In-Page AI Deal Advisor & Dealership Directory */}
@@ -179,6 +275,15 @@ export default function App() {
 
       <Footer />
 
+      {/* Floating Multi-Select Compare Bar */}
+      <CompareFloatingBar
+        selectedItems={compareMode === 'vehicles' ? selectedCompareCars : selectedCompareParts}
+        mode={compareMode}
+        onRemoveItem={handleRemoveCompareItem}
+        onClearAll={handleClearCompare}
+        onCompareNow={handleLaunchMultiCompare}
+      />
+
       {/* Interactive Modals */}
       <FilmModal isOpen={isFilmOpen} onClose={() => setIsFilmOpen(false)} />
 
@@ -195,6 +300,8 @@ export default function App() {
         onClose={() => setIsCompareOpen(false)}
         userState={userState}
         initialVehicleId={compareInitialVehicleId}
+        initialIds={compareModalInitialIds}
+        initialMode={compareMode}
         onSelectInquiry={handleInquireVehicle}
       />
 
@@ -204,6 +311,10 @@ export default function App() {
         userState={userState}
         initialQuery={searchInitialQuery}
         onSelectInquiry={handleInquireVehicle}
+        onToggleCompareCar={handleToggleCompareCar}
+        onToggleComparePart={handleToggleComparePart}
+        selectedCompareCarIds={selectedCompareCars.map((c) => c.id)}
+        selectedComparePartIds={selectedCompareParts.map((p) => p.id)}
       />
 
       <AiAdvisorModal
@@ -211,6 +322,14 @@ export default function App() {
         onClose={() => setIsAdvisorOpen(false)}
         userState={userState}
         onSelectInquiry={handleInquireVehicle}
+      />
+
+      {/* User Auth Modal (Database Only Stores User Details) */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
+        initialTab={authInitialTab}
       />
     </>
   );

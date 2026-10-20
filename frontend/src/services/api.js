@@ -68,12 +68,20 @@ export async function getVehicle(id) {
  * Universal Search across Indian Vehicles, Accessories, Parts, and Authorized Dealers.
  * Works online and offline.
  */
+const CAR_TO_BRAND = {
+  creta: 'Hyundai', verna: 'Hyundai', venue: 'Hyundai', alcazar: 'Hyundai', tucson: 'Hyundai',
+  xuv700: 'Mahindra', thar: 'Mahindra', scorpio: 'Mahindra', safari: 'Tata', harrier: 'Tata',
+  nexon: 'Tata', curvv: 'Tata', fortuner: 'Toyota', innova: 'Toyota', swift: 'Maruti',
+  brezza: 'Maruti', baleno: 'Maruti', city: 'Honda', elevate: 'Honda', seltos: 'Kia',
+  sonet: 'Kia', '3 series': 'BMW', m3: 'BMW', 'c-class': 'Mercedes', a4: 'Audi', 911: 'Porsche'
+};
+
 export async function searchUniversal(query = '', type = 'all', state = 'all', sort = 'cheapest') {
   try {
     const params = new URLSearchParams();
     if (query) params.append('q', query);
     if (type) params.append('type', type);
-    if (state && state !== 'All India' && state !== 'all') params.append('state', state);
+    if (state) params.append('state', state);
     if (sort) params.append('sort', sort);
 
     const res = await fetch(`${API_BASE}/search/?${params.toString()}`);
@@ -82,7 +90,17 @@ export async function searchUniversal(query = '', type = 'all', state = 'all', s
   } catch (err) {
     // Offline local universal search
     const q = query.toLowerCase().trim();
-    const stateFilter = state && state !== 'All India' && state !== 'all' ? state.toLowerCase() : null;
+    const isAllIndia = !state || state.toLowerCase() === 'all india' || state.toLowerCase() === 'all';
+    const stateFilter = isAllIndia ? null : state.toLowerCase();
+
+    // Check if user is searching for a car model to map to its brand
+    let targetBrand = null;
+    for (const [cKey, bVal] of Object.entries(CAR_TO_BRAND)) {
+      if (q.includes(cKey) || cKey.includes(q)) {
+        targetBrand = bVal.toLowerCase();
+        break;
+      }
+    }
 
     const matchedVehicles = indianCars.filter((c) => {
       if (stateFilter && c.best_dealer_offer?.dealer?.state?.toLowerCase() !== stateFilter && stateFilter !== 'all') {
@@ -145,11 +163,20 @@ export async function searchUniversal(query = '', type = 'all', state = 'all', s
     const matchedDealers = indianDealers.filter((d) => {
       if (stateFilter && d.state.toLowerCase() !== stateFilter) return false;
       if (!q) return true;
+      const dBrand = (d.brand_focus || '').toLowerCase();
+      const dName = (d.name || '').toLowerCase();
+      const dCity = (d.city || '').toLowerCase();
+      const dState = (d.state || '').toLowerCase();
+
+      if (targetBrand && (dBrand.includes(targetBrand) || dBrand.includes('multi-brand') || dName.includes(targetBrand))) {
+        return true;
+      }
+
       return (
-        d.name.toLowerCase().includes(q) ||
-        d.city.toLowerCase().includes(q) ||
-        d.state.toLowerCase().includes(q) ||
-        d.brand_focus.toLowerCase().includes(q)
+        dName.includes(q) ||
+        dCity.includes(q) ||
+        dState.includes(q) ||
+        dBrand.includes(q)
       );
     });
 
@@ -537,4 +564,74 @@ export async function checkBackendStatus() {
   } catch (e) {
     return { online: false, error: e.message };
   }
+}
+
+/**
+ * User Authentication & Database Profile Services
+ * Stores only user details in the database upon login/registration
+ */
+export async function registerUser(userData) {
+  try {
+    const res = await fetch(`${API_BASE}/dms/auth/register/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      const errMsg = typeof data === 'object'
+        ? Object.entries(data).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(' ') : v}`).join(' | ')
+        : 'Registration failed';
+      throw new Error(errMsg);
+    }
+    if (data.access) {
+      localStorage.setItem('aurel_auth_token', data.access);
+      localStorage.setItem('aurel_refresh_token', data.refresh);
+    }
+    if (data.user) {
+      localStorage.setItem('aurel_user', JSON.stringify(data.user));
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function loginUser(credentials) {
+  try {
+    const res = await fetch(`${API_BASE}/dms/auth/login/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || data.detail || 'Invalid username or password');
+    }
+    if (data.access) {
+      localStorage.setItem('aurel_auth_token', data.access);
+      localStorage.setItem('aurel_refresh_token', data.refresh);
+    }
+    if (data.user) {
+      localStorage.setItem('aurel_user', JSON.stringify(data.user));
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export function getCurrentUser() {
+  try {
+    const userStr = localStorage.getItem('aurel_user');
+    return userStr ? JSON.parse(userStr) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function logoutUser() {
+  localStorage.removeItem('aurel_auth_token');
+  localStorage.removeItem('aurel_refresh_token');
+  localStorage.removeItem('aurel_user');
 }

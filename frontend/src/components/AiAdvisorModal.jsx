@@ -170,7 +170,15 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
                   <div className="chat-recs-grid grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                     {msg.vehicles.map((v) => (
                       <div className="chat-car-card bg-[#141714] border border-white/10 rounded-xs overflow-hidden p-3 text-xs flex flex-col justify-between" key={v.id}>
-                        {v.image_url && <img src={v.image_url} alt={v.name} className="chat-car-img w-full h-28 object-cover rounded-xs mb-2" />}
+                        <img
+                          src={v.image_url || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85'}
+                          alt={v.name}
+                          className="chat-car-img w-full h-28 object-cover rounded-xs mb-2 bg-black/40"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=85';
+                          }}
+                        />
                         <div className="chat-car-info space-y-1">
                           <h4 className="font-semibold text-white text-sm">{v.name}</h4>
                           <span className="chat-car-price text-[#c5a77a] font-bold block">{v.price} · {v.fuel_type}</span>
