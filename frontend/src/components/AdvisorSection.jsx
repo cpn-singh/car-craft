@@ -81,8 +81,8 @@ export default function AdvisorSection({ userState, onSelectInquiry }) {
   };
 
   return (
-    <section 
-      className="section-pad advisor-section pt-16 md:pt-24 pb-20 md:pb-28 px-4 sm:px-[7%] lg:px-[11.5%] bg-[#11120f] text-white" 
+    <section
+      className="section-pad advisor-section pt-16 md:pt-24 pb-20 md:pb-28 px-4 sm:px-[7%] lg:px-[11.5%] bg-[#11120f] text-white"
       id="advisor"
     >
       <div className="section-label flex justify-between pb-[19px] border-b border-white/15 text-[#c9c5ba] text-[9px] tracking-[0.22em] uppercase font-sans">
@@ -103,18 +103,16 @@ export default function AdvisorSection({ userState, onSelectInquiry }) {
         <div className="advisor-toggle-tabs flex items-center gap-1.5 p-1 bg-white/5 border border-white/10 rounded-full self-start md:self-auto">
           <button
             type="button"
-            className={`toggle-tab-btn px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-              activeTab === 'advisor' ? 'bg-[#c5a77a] text-[#11120f]' : 'text-[#ccc] hover:text-white'
-            }`}
+            className={`toggle-tab-btn px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === 'advisor' ? 'bg-[#c5a77a] text-[#11120f]' : 'text-[#ccc] hover:text-white'
+              }`}
             onClick={() => setActiveTab('advisor')}
           >
             Ask a question
           </button>
           <button
             type="button"
-            className={`toggle-tab-btn px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-              activeTab === 'dealers' ? 'bg-[#c5a77a] text-[#11120f]' : 'text-[#ccc] hover:text-white'
-            }`}
+            className={`toggle-tab-btn px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === 'dealers' ? 'bg-[#c5a77a] text-[#11120f]' : 'text-[#ccc] hover:text-white'
+              }`}
             onClick={() => setActiveTab('dealers')}
           >
             🏢 Verified Dealerships ({dealers.length || 0})
@@ -143,21 +141,19 @@ export default function AdvisorSection({ userState, onSelectInquiry }) {
           {/* --- Chat Stream --- */}
           <div className="advisor-inline-chat-stream space-y-4 max-h-[500px] overflow-y-auto pr-2 mb-4">
             {chatLog.map((msg, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`chat-row flex gap-3 ${msg.sender === 'user' ? 'flex-row-reverse justify-start' : 'justify-start'}`}
               >
-                <div className={`chat-avatar-badge w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm border ${
-                  msg.sender === 'user' ? 'bg-[#c5a77a] border-[#c5a77a]' : 'bg-white/10 border-white/15'
-                }`}>
+                <div className={`chat-avatar-badge w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm border ${msg.sender === 'user' ? 'bg-[#c5a77a] border-[#c5a77a]' : 'bg-white/10 border-white/15'
+                  }`}>
                   {msg.sender === 'ai' ? '🤖' : '👤'}
                 </div>
-                
-                <div className={`chat-message-box max-w-2xl p-4 rounded-xs text-xs leading-relaxed ${
-                  msg.sender === 'user' 
-                    ? 'bg-[#c5a77a] text-[#11120f] font-medium' 
+
+                <div className={`chat-message-box max-w-2xl p-4 rounded-xs text-xs leading-relaxed ${msg.sender === 'user'
+                    ? 'bg-[#c5a77a] text-[#11120f] font-medium'
                     : 'bg-[#1c211c] text-[#eae8e1] border border-white/10'
-                }`}>
+                  }`}>
                   <div className="chat-message-text" style={{ whiteSpace: 'pre-line' }}>
                     {msg.text}
                   </div>
@@ -174,15 +170,15 @@ export default function AdvisorSection({ userState, onSelectInquiry }) {
                             <span className="rec-stats text-[10px] text-[#888] block">⛽ {v.mileage} · 🛡️ {v.safety}</span>
 
                             {v.best_dealer && (
-                              <div className="rec-dealer-callout bg-white/5 border border-emerald-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
-                                <span className="rec-best-tag text-[9px] uppercase tracking-wider text-emerald-400 font-bold block">
+                              <div className="rec-dealer-callout bg-white/5 border border-[#c5a77a]-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
+                                <span className="rec-best-tag text-[9px] uppercase tracking-wider text-[#c5a77a]-400 font-bold block">
                                   🏆 CHEAPEST IN {v.best_dealer.state}:
                                 </span>
                                 <strong className="text-white block">{v.best_dealer.name}</strong> ({v.best_dealer.city})
-                                <div className="rec-offer-price text-emerald-400 font-bold">
+                                <div className="rec-offer-price text-[#c5a77a]-400 font-bold">
                                   Best Deal: <strong>{v.best_offer_price}</strong>
                                   {v.best_dealer.discount && (
-                                    <span className="rec-save text-[10px] ml-1 text-emerald-300">
+                                    <span className="rec-save text-[10px] ml-1 text-[#c5a77a]-300">
                                       (Save ₹{v.best_dealer.discount?.toLocaleString()})
                                     </span>
                                   )}
@@ -277,9 +273,9 @@ export default function AdvisorSection({ userState, onSelectInquiry }) {
                   </div>
 
                   <div className="d-card-footer flex items-center justify-between gap-3 mt-5 pt-3 border-t border-white/10">
-                    <span className="verified-pill text-emerald-400 font-semibold text-[10px]">✓ Authorized Dealership</span>
-                    <a 
-                      href={`tel:${d.phone}`} 
+                    <span className="verified-pill text-[#c5a77a]-400 font-semibold text-[10px]">✓ Authorized Dealership</span>
+                    <a
+                      href={`tel:${d.phone}`}
                       className="button button-outline-sm inline-flex items-center justify-center px-3 py-1.5 bg-transparent hover:bg-white/10 text-white border border-white/25 rounded-xs text-[10px] tracking-wider uppercase font-semibold transition-colors"
                     >
                       Call Dealership

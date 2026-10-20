@@ -12,7 +12,7 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
   const [selectedState, setSelectedState] = useState(userState || 'Maharashtra');
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const [conversation, setConversation] = useState([
     {
       sender: 'ai',
@@ -86,19 +86,19 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
   };
 
   return (
-    <div 
-      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]" 
-      onClick={onClose} 
-      role="dialog" 
+    <div
+      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]"
+      onClick={onClose}
+      role="dialog"
       aria-modal="true"
     >
-      <div 
-        className="modal-card advisor-modal-card relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden" 
+      <div
+        className="modal-card advisor-modal-card relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <button 
-          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10" 
-          onClick={onClose} 
+        <button
+          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10"
+          onClick={onClose}
           aria-label="Close dialog"
         >
           ✕
@@ -149,20 +149,18 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
         {/* --- Conversation Stream --- */}
         <div className="advisor-chat-stream flex-1 overflow-y-auto space-y-4 py-4 pr-2">
           {conversation.map((msg, idx) => (
-            <div 
-              key={`msg-${idx}`} 
+            <div
+              key={`msg-${idx}`}
               className={`chat-bubble-wrap flex gap-3 ${msg.sender === 'user' ? 'flex-row-reverse justify-start' : 'justify-start'}`}
             >
-              <div className={`chat-avatar w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm border ${
-                msg.sender === 'user' ? 'bg-[#c5a77a] border-[#c5a77a]' : 'bg-white/10 border-white/15'
-              }`}>
+              <div className={`chat-avatar w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm border ${msg.sender === 'user' ? 'bg-[#c5a77a] border-[#c5a77a]' : 'bg-white/10 border-white/15'
+                }`}>
                 {msg.sender === 'ai' ? '🤖' : '👤'}
               </div>
-              <div className={`chat-bubble max-w-2xl p-4 rounded-xs text-xs leading-relaxed ${
-                msg.sender === 'user' 
-                  ? 'bg-[#c5a77a] text-[#11120f] font-medium' 
+              <div className={`chat-bubble max-w-2xl p-4 rounded-xs text-xs leading-relaxed ${msg.sender === 'user'
+                  ? 'bg-[#c5a77a] text-[#11120f] font-medium'
                   : 'bg-[#1c211c] text-[#eae8e1] border border-white/10'
-              }`}>
+                }`}>
                 <div className="chat-text" style={{ whiteSpace: 'pre-line' }}>
                   {msg.text}
                 </div>
@@ -179,13 +177,13 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
                           <span className="chat-car-stats text-[10px] text-[#888] block">🛡️ {v.safety} · ⛽ {v.mileage}</span>
 
                           {v.best_dealer && (
-                            <div className="chat-dealer-box bg-white/5 border border-emerald-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
-                              <span className="chat-best-title text-[9px] uppercase tracking-wider text-emerald-400 font-bold block">
+                            <div className="chat-dealer-box bg-white/5 border border-[#c5a77a]-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
+                              <span className="chat-best-title text-[9px] uppercase tracking-wider text-[#c5a77a]-400 font-bold block">
                                 🏆 CHEAPEST DEALER ({v.best_dealer.state}):
                               </span>
                               <strong className="text-white block">{v.best_dealer.name}</strong> ({v.best_dealer.city})
-                              <div className="chat-deal-highlight text-emerald-400 font-bold">
-                                Best Offer: {v.best_offer_price} 
+                              <div className="chat-deal-highlight text-[#c5a77a]-400 font-bold">
+                                Best Offer: {v.best_offer_price}
                                 {v.best_dealer.discount && ` (Save ₹${v.best_dealer.discount.toLocaleString()})`}
                               </div>
                               <div className="chat-dealer-contact text-[10px] text-[#888]">
@@ -226,7 +224,7 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
               </div>
             </div>
           )}
-          
+
           <div ref={chatEndRef} />
         </div>
 
@@ -235,7 +233,7 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
           className="advisor-input-form flex gap-2.5 pt-4 border-t border-white/10 shrink-0"
           onSubmit={(e) => {
             e.preventDefault();
-            handleSend(); 
+            handleSend();
           }}
         >
           <input
@@ -246,8 +244,8 @@ export default function AiAdvisorModal({ isOpen, onClose, userState, onSelectInq
             onChange={(e) => setQuery(e.target.value)}
             disabled={loading}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="button button-gold px-5 py-2.5 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[11px] uppercase tracking-wider rounded-xs transition-colors cursor-pointer disabled:opacity-50"
             disabled={loading || !query.trim()}
           >

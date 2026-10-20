@@ -10,7 +10,7 @@ import { compareVehicles, INDIAN_STATES } from '../services/api.js';
 import indianCars from '../data/cars.js';
 
 export default function CompareSection({ userState, onStateChange, onInquireVehicle }) {
-  const [selectedIds, setSelectedIds] = useState([7, 8]); 
+  const [selectedIds, setSelectedIds] = useState([7, 8]);
   const [comparison, setComparison] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +42,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
 
   function addThirdCar() {
     if (selectedIds.length === 2) {
-      setSelectedIds([...selectedIds, 9]); 
+      setSelectedIds([...selectedIds, 9]);
     }
   }
 
@@ -55,8 +55,8 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
   const activeCars = selectedIds.map((id) => indianCars.find((c) => c.id === id) || indianCars[0]);
 
   return (
-    <section 
-      className="section-pad compare-section pt-16 md:pt-24 pb-20 md:pb-28 px-4 sm:px-[7%] lg:px-[11.5%] bg-[#11120f] text-white" 
+    <section
+      className="section-pad compare-section pt-16 md:pt-24 pb-20 md:pb-28 px-4 sm:px-[7%] lg:px-[11.5%] bg-[#11120f] text-white"
       id="compare"
     >
       <div className="section-label flex justify-between pb-[19px] border-b border-white/15 text-[#c9c5ba] text-[9px] tracking-[0.22em] uppercase font-sans">
@@ -110,16 +110,16 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
         ))}
 
         {selectedIds.length === 2 ? (
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="add-compare-btn px-3.5 py-2 text-xs font-semibold uppercase tracking-wider border border-[#c5a77a] text-[#c5a77a] hover:bg-[#c5a77a]/10 rounded-xs transition-colors cursor-pointer"
             onClick={addThirdCar}
           >
             + Add 3rd Car
           </button>
         ) : (
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="remove-compare-btn px-3.5 py-2 text-xs font-semibold uppercase tracking-wider border border-red-500/40 text-red-400 hover:bg-red-500/10 rounded-xs transition-colors cursor-pointer"
             onClick={removeThirdCar}
           >
@@ -143,7 +143,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
                 <div className="callout-badge col-span-full text-[11px] uppercase tracking-wider text-[#c5a77a] font-bold mb-1">
                   CHEAPEST DEALER IN {(userState || 'INDIA').toUpperCase()}
                 </div>
-                
+
                 <div className="callout-vehicle-group">
                   <h4 className="callout-vehicle-name font-semibold text-white">
                     {comparison.ai_verdict.cheapest_option.vehicle_name}
@@ -235,9 +235,9 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
                           </div>
                           <div className="price-offer-box bg-white/5 p-2 rounded-xs">
                             <span className="offer-label text-[9px] uppercase tracking-wider text-[#888] block">Cheapest Offer:</span>
-                            <span className="offer-val text-emerald-400 font-bold text-sm block">{finalPrice}</span>
+                            <span className="offer-val text-[#c5a77a]-400 font-bold text-sm block">{finalPrice}</span>
                             {Number(discount) > 0 && (
-                              <span className="offer-discount text-[10px] text-emerald-400 font-semibold block">
+                              <span className="offer-discount text-[10px] text-[#c5a77a]-400 font-semibold block">
                                 Save ₹{Number(discount).toLocaleString('en-IN')} Discount
                               </span>
                             )}

@@ -8,11 +8,11 @@
 import React, { useState, useEffect } from 'react';
 import { submitInquiry, createServiceAppointment, getParts, createOrder } from '../services/api.js';
 
-export default function BookingModal({ 
-  isOpen, 
-  onClose, 
-  selectedVehicle, 
-  initialTab = 'inquiry', 
+export default function BookingModal({
+  isOpen,
+  onClose,
+  selectedVehicle,
+  initialTab = 'inquiry',
   userState = 'Maharashtra'
 }) {
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -107,7 +107,7 @@ export default function BookingModal({
     e.preventDefault();
     setLoading(true);
     setErrorMessage(null);
-    
+
     try {
       const res = await submitInquiry(inquiryData);
       setSuccessMessage(`Thank you, ${res.name}. Your inquiry has been registered with our atelier team (Ref #${res.id}). We will reach out shortly.`);
@@ -160,10 +160,10 @@ export default function BookingModal({
       };
 
       const res = await createOrder(orderPayload);
-      const total = Number(res.total_amount) || 0; 
-      
+      const total = Number(res.total_amount) || 0;
+
       setSuccessMessage(`Order #${res.order_number} confirmed for ${selectedPart.name}! Total: ₹${total.toLocaleString('en-IN')}`);
-      
+
       setSelectedPart(null);
       setOrderName('');
       setOrderEmail('');
@@ -177,19 +177,19 @@ export default function BookingModal({
   };
 
   return (
-    <div 
-      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]" 
-      onClick={onClose} 
-      role="dialog" 
+    <div
+      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]"
+      onClick={onClose}
+      role="dialog"
       aria-modal="true"
     >
-      <div 
-        className="modal-card relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden" 
+      <div
+        className="modal-card relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <button 
-          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10" 
-          onClick={onClose} 
+        <button
+          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10"
+          onClick={onClose}
           aria-label="Close dialog"
         >
           ✕
@@ -202,36 +202,33 @@ export default function BookingModal({
           <h2 className="font-serif text-xl sm:text-2xl font-light text-white m-0 mb-4">
             Client Services &amp; Concierge
           </h2>
-          
+
           <div className="modal-tabs flex flex-wrap items-center gap-2 border-b border-white/10 pb-2">
             <button
-              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-                activeTab === 'inquiry' 
-                  ? 'bg-[#c5a77a] text-[#11120f]' 
+              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === 'inquiry'
+                  ? 'bg-[#c5a77a] text-[#11120f]'
                   : 'bg-white/5 text-[#aaa] hover:text-white'
-              }`}
+                }`}
               onClick={() => { setActiveTab('inquiry'); setSuccessMessage(null); setErrorMessage(null); }}
               type="button"
             >
               Private Viewing &amp; Inquiry
             </button>
             <button
-              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-                activeTab === 'service' 
-                  ? 'bg-[#c5a77a] text-[#11120f]' 
+              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === 'service'
+                  ? 'bg-[#c5a77a] text-[#11120f]'
                   : 'bg-white/5 text-[#aaa] hover:text-white'
-              }`}
+                }`}
               onClick={() => { setActiveTab('service'); setSuccessMessage(null); setErrorMessage(null); }}
               type="button"
             >
               Atelier Service Booking
             </button>
             <button
-              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-                activeTab === 'parts' 
-                  ? 'bg-[#c5a77a] text-[#11120f]' 
+              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${activeTab === 'parts'
+                  ? 'bg-[#c5a77a] text-[#11120f]'
                   : 'bg-white/5 text-[#aaa] hover:text-white'
-              }`}
+                }`}
               onClick={() => { setActiveTab('parts'); setSuccessMessage(null); setErrorMessage(null); }}
               type="button"
             >
@@ -243,7 +240,7 @@ export default function BookingModal({
         <div className="modal-body flex-1 overflow-y-auto py-4 pr-1">
           {/* Global Alerts */}
           {successMessage && (
-            <div className="alert-box success flex items-start gap-3 p-4 rounded-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs mb-4">
+            <div className="alert-box success flex items-start gap-3 p-4 rounded-xs bg-[#c5a77a]-500/10 border border-[#c5a77a]-500/30 text-[#c5a77a]-300 text-xs mb-4">
               <span className="alert-icon text-base font-bold">✓</span>
               <div>
                 <h4 className="font-semibold text-white mb-0.5">Request Received</h4>
@@ -331,8 +328,8 @@ export default function BookingModal({
               </div>
 
               <div className="form-footer pt-2">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="button button-gold w-full sm:w-auto px-6 py-3 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[11px] uppercase tracking-wider rounded-xs transition-colors cursor-pointer disabled:opacity-50"
                   disabled={loading}
                 >
@@ -442,8 +439,8 @@ export default function BookingModal({
               </div>
 
               <div className="form-footer pt-2">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="button button-gold w-full sm:w-auto px-6 py-3 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[11px] uppercase tracking-wider rounded-xs transition-colors cursor-pointer disabled:opacity-50"
                   disabled={loading}
                 >
@@ -555,8 +552,8 @@ export default function BookingModal({
                   </div>
 
                   <div className="form-footer pt-2">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="button button-gold w-full sm:w-auto px-6 py-3 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[11px] uppercase tracking-wider rounded-xs transition-colors cursor-pointer disabled:opacity-50"
                       disabled={loading}
                     >
@@ -574,9 +571,9 @@ export default function BookingModal({
               <button
                 type="button"
                 className="button button-outline px-6 py-2.5 bg-transparent hover:bg-white/10 text-white border border-white/30 rounded-xs text-xs tracking-wider uppercase font-semibold transition-colors cursor-pointer"
-                onClick={() => { 
-                  setSuccessMessage(null); 
-                  onClose(); 
+                onClick={() => {
+                  setSuccessMessage(null);
+                  onClose();
                 }}
               >
                 Close Concierge Window

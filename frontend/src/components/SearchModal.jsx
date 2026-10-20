@@ -8,13 +8,13 @@
 import React, { useState, useEffect } from 'react';
 import { searchUniversal, INDIAN_STATES } from '../services/api.js';
 
-export default function SearchModal({ 
-  isOpen, 
-  onClose, 
-  userState, 
-  initialQuery = '', 
-  onSelectVehicle, 
-  onSelectInquiry 
+export default function SearchModal({
+  isOpen,
+  onClose,
+  userState,
+  initialQuery = '',
+  onSelectVehicle,
+  onSelectInquiry
 }) {
   const [query, setQuery] = useState(initialQuery || '');
   const [categoryType, setCategoryType] = useState('all');
@@ -48,7 +48,7 @@ export default function SearchModal({
     let isMounted = true;
     const timeout = setTimeout(() => {
       setLoading(true);
-      
+
       searchUniversal(query, categoryType, selectedState, sortBy)
         .then((data) => {
           if (isMounted) setSearchResults(data);
@@ -73,19 +73,19 @@ export default function SearchModal({
   const totalCount = searchResults?.total_count || 0;
 
   return (
-    <div 
-      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]" 
-      onClick={onClose} 
-      role="dialog" 
+    <div
+      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]"
+      onClick={onClose}
+      role="dialog"
       aria-modal="true"
     >
-      <div 
-        className="modal-card search-modal-card relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden" 
+      <div
+        className="modal-card search-modal-card relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <button 
-          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10" 
-          onClick={onClose} 
+        <button
+          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10"
+          onClick={onClose}
           aria-label="Close search"
         >
           ✕
@@ -98,7 +98,7 @@ export default function SearchModal({
           <h2 className="font-serif text-xl sm:text-2xl font-light text-white m-0">
             Search Cars, Accessories &amp; Verified Dealers
           </h2>
-          
+
           <div className="search-input-wrap relative flex items-center my-3 bg-[#11120f] border border-white/15 rounded-xs p-1 focus-within:border-[#c5a77a]">
             <span className="search-icon text-[#c5a77a] px-3 text-base" aria-hidden="true">🔍</span>
             <input
@@ -107,12 +107,12 @@ export default function SearchModal({
               placeholder="Search XUV700, Tata Safari, 4K Dashcam, Ceramic Coating, Dealers..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              autoFocus 
+              autoFocus
             />
             {query && (
-              <button 
-                type="button" 
-                className="clear-btn px-3 text-xs text-[#888] hover:text-white cursor-pointer" 
+              <button
+                type="button"
+                className="clear-btn px-3 text-xs text-[#888] hover:text-white cursor-pointer"
                 onClick={() => setQuery('')}
                 aria-label="Clear search query"
               >
@@ -133,11 +133,10 @@ export default function SearchModal({
                 <button
                   key={`tab-${tab.value}`}
                   type="button"
-                  className={`tab-btn px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors whitespace-nowrap ${
-                    categoryType === tab.value 
-                      ? 'bg-[#c5a77a] text-[#11120f] font-semibold' 
+                  className={`tab-btn px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors whitespace-nowrap ${categoryType === tab.value
+                      ? 'bg-[#c5a77a] text-[#11120f] font-semibold'
                       : 'bg-white/5 text-[#aaa] hover:text-white'
-                  }`}
+                    }`}
                   onClick={() => setCategoryType(tab.value)}
                 >
                   {tab.label}
@@ -186,7 +185,7 @@ export default function SearchModal({
 
           {!loading && (
             <div className="search-results-container space-y-6">
-              
+
               {/* VEHICLES RESULTS */}
               {Array.isArray(results.vehicles) && results.vehicles.length > 0 && (
                 <div className="result-section">
@@ -197,10 +196,10 @@ export default function SearchModal({
                     {results.vehicles.map((v) => (
                       <div className="search-item-card bg-[#1c211c] border border-white/10 rounded-xs overflow-hidden p-4 flex flex-col justify-between hover:border-[#c5a77a]/50 transition-all" key={`veh-${v.id}`}>
                         <div>
-                          <img 
-                            src={v.full_image_url || '/assets/images/fallback-car.jpg'} 
-                            alt={v.name} 
-                            className="search-card-img w-full h-36 object-cover rounded-xs mb-3 bg-black/40" 
+                          <img
+                            src={v.full_image_url || '/assets/images/fallback-car.jpg'}
+                            alt={v.name}
+                            className="search-card-img w-full h-36 object-cover rounded-xs mb-3 bg-black/40"
                             loading="lazy"
                           />
                           <div className="search-card-content space-y-1">
@@ -211,15 +210,15 @@ export default function SearchModal({
                             <span className="car-base-price text-[#c5a77a] font-bold text-xs block">Base: {v.formatted_price}</span>
 
                             {v.best_dealer_in_state ? (
-                              <div className="search-dealer-callout bg-white/5 border border-emerald-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
-                                <span className="best-tag text-[9px] uppercase tracking-wider text-emerald-400 font-bold block">
+                              <div className="search-dealer-callout bg-white/5 border border-[#c5a77a]-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
+                                <span className="best-tag text-[9px] uppercase tracking-wider text-[#c5a77a]-400 font-bold block">
                                   CHEAPEST DEALER IN {selectedState.toUpperCase()}:
                                 </span>
                                 <div className="dealer-name-line flex items-center justify-between text-xs">
                                   <span className="dealer-name-strong text-white font-semibold truncate">{v.best_dealer_in_state.dealer_name}</span>
                                   <span className="dealer-star-pill text-[#c5a77a] font-bold text-[10px] shrink-0 ml-1">★ {v.best_dealer_in_state.rating || '4.0'}</span>
                                 </div>
-                                <div className="dealer-price-line flex items-baseline justify-between text-emerald-400 font-bold">
+                                <div className="dealer-price-line flex items-baseline justify-between text-[#c5a77a]-400 font-bold">
                                   <span className="deal-price">{v.best_dealer_in_state.formatted_offer_price}</span>
                                 </div>
                                 <div className="dealer-contact-line text-[10px] text-[#888] truncate">
@@ -270,14 +269,14 @@ export default function SearchModal({
                             <p className="dim-desc text-[11px] text-[#888] line-clamp-2">{p.description}</p>
 
                             {p.best_dealer_in_state && (
-                              <div className="search-dealer-callout bg-white/5 border border-emerald-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
-                                <span className="best-tag text-[9px] uppercase tracking-wider text-emerald-400 font-bold block">
+                              <div className="search-dealer-callout bg-white/5 border border-[#c5a77a]-500/30 p-2.5 rounded-xs my-2 text-[11px] space-y-1">
+                                <span className="best-tag text-[9px] uppercase tracking-wider text-[#c5a77a]-400 font-bold block">
                                   LOWEST SELLER PRICE IN {selectedState.toUpperCase()}:
                                 </span>
                                 <div className="dealer-name-line text-white font-semibold text-xs">
                                   <strong>{p.best_dealer_in_state.dealer_name}</strong> ({p.best_dealer_in_state.city})
                                 </div>
-                                <div className="dealer-price-line flex items-baseline justify-between text-emerald-400 font-bold">
+                                <div className="dealer-price-line flex items-baseline justify-between text-[#c5a77a]-400 font-bold">
                                   <span className="deal-price">{p.best_dealer_in_state.formatted_offer_price}</span>
                                   <small className="text-[10px] text-[#aaa]">Delivery: {p.best_dealer_in_state.delivery_days} Day(s)</small>
                                 </div>
@@ -335,15 +334,15 @@ export default function SearchModal({
                             </div>
                             <span className="rating-pill text-[#c5a77a] font-bold text-xs shrink-0">★ {d.rating} ({d.reviews_count} reviews)</span>
                           </div>
-                          
+
                           <div className="dealer-details text-xs text-[#aaa] space-y-1 my-2">
                             <p>{d.address}, {d.city}, {d.state} {d.pincode}</p>
                             <p>Phone: <a href={`tel:${d.phone}`} className="phone-link text-[#c5a77a] hover:underline">{d.phone}</a></p>
                             <p>Email: <a href={`mailto:${d.email}`} className="text-white hover:underline">{d.email}</a></p>
                           </div>
                         </div>
-                        
-                        <div className="dealer-verified-tag text-emerald-400 font-semibold text-[10px] pt-2 border-t border-white/10">
+
+                        <div className="dealer-verified-tag text-[#c5a77a]-400 font-semibold text-[10px] pt-2 border-t border-white/10">
                           ✓ Authorized &amp; Certified Dealer
                         </div>
                       </div>

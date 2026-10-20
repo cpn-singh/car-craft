@@ -16,10 +16,10 @@ function VehicleCard({ car, onInquire, onCompare }) {
     const box = event.currentTarget.getBoundingClientRect();
     const horizontalPosition = (event.clientX - box.left) / box.width - 0.5;
     const verticalPosition = (event.clientY - box.top) / box.height - 0.5;
-    
+
     const image = event.currentTarget.querySelector('img');
     if (image) {
-      const tiltMultiplier = 15; 
+      const tiltMultiplier = 15;
       image.style.transform = `scale(1.055) rotateY(${horizontalPosition * tiltMultiplier}deg) rotateX(${-verticalPosition * tiltMultiplier}deg)`;
     }
   }
@@ -31,7 +31,7 @@ function VehicleCard({ car, onInquire, onCompare }) {
 
   const photoUrl = car.full_image_url || `https://images.unsplash.com/${car.image_id}?auto=format&fit=crop&w=1100&q=85`;
   const displayPrice = car.formatted_price || car.price_display || `₹${car.price}`;
-  
+
   const displaySpecs = Array.isArray(car.specs) && car.specs.length > 0
     ? car.specs
     : [car.fuel_type, car.mileage_arai, `${car.seating_capacity} Seater`].filter(Boolean);
@@ -39,8 +39,8 @@ function VehicleCard({ car, onInquire, onCompare }) {
   const bestOffer = car.best_dealer_offer;
 
   return (
-    <article 
-      className="car-card min-w-0 flex flex-col bg-[#dfdcd3] border border-black/10 rounded-sm overflow-hidden p-4 group transition-all duration-300 hover:shadow-xl hover:border-black/20" 
+    <article
+      className="car-card min-w-0 flex flex-col bg-[#dfdcd3] border border-black/10 rounded-sm overflow-hidden p-4 group transition-all duration-300 hover:shadow-xl hover:border-black/20"
       data-type={car.category}
     >
       <button
@@ -51,11 +51,11 @@ function VehicleCard({ car, onInquire, onCompare }) {
         onPointerLeave={resetImage}
         aria-label={`Ask us about the ${car.name}`}
       >
-        <img 
-          data-car-image={car.vin || car.id} 
-          src={photoUrl} 
-          alt={car.alt_text || car.name} 
-          loading="lazy" 
+        <img
+          data-car-image={car.vin || car.id}
+          src={photoUrl}
+          alt={car.alt_text || car.name}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
@@ -182,15 +182,15 @@ export default function Collection({ userState, onInquireVehicle, onOpenCompare 
   ];
 
   return (
-    <section 
-      className="collection section-pad bg-[#e8e6df] text-[#181916] pt-16 md:pt-[88px] pb-20 md:pb-[116px] px-4 sm:px-[7%] lg:px-[11.5%]" 
+    <section
+      className="collection section-pad bg-[#e8e6df] text-[#181916] pt-16 md:pt-[88px] pb-20 md:pb-[116px] px-4 sm:px-[7%] lg:px-[11.5%]"
       id="collection"
     >
       <div className="section-label flex justify-between pb-[19px] border-b border-black/15 text-[#77776f] text-[9px] tracking-[0.22em] uppercase font-sans">
         <span>02 / FIND YOUR NEXT CAR</span>
         <span>
           VERIFIED DEALER PRICING IN {userState ? userState.toUpperCase() : 'INDIA'}
-          {backendConnected && <span className="api-badge text-emerald-700 font-bold ml-1"> · LIVE LISTINGS</span>}
+          {backendConnected && <span className="api-badge text-[#c5a77a]-700 font-bold ml-1"> · LIVE LISTINGS</span>}
         </span>
       </div>
 
@@ -215,11 +215,10 @@ export default function Collection({ userState, onInquireVehicle, onOpenCompare 
       <div className="filters flex items-center gap-6 border-b border-black/15 my-8 overflow-x-auto pb-3" role="group" aria-label="Filter vehicles">
         {filterOptions.map((filter) => (
           <button
-            className={`filter whitespace-nowrap pb-3 border-b-2 text-[10px] uppercase tracking-wider cursor-pointer font-medium transition-colors bg-transparent border-t-0 border-x-0 ${
-              selectedFilter === filter.value 
-                ? 'border-[#9b8057] text-[#1a1b17] font-bold' 
+            className={`filter whitespace-nowrap pb-3 border-b-2 text-[10px] uppercase tracking-wider cursor-pointer font-medium transition-colors bg-transparent border-t-0 border-x-0 ${selectedFilter === filter.value
+                ? 'border-[#9b8057] text-[#1a1b17] font-bold'
                 : 'border-transparent text-[#85857d] hover:text-[#181916]'
-            }`}
+              }`}
             key={filter.value}
             type="button"
             aria-pressed={selectedFilter === filter.value}

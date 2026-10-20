@@ -13,10 +13,10 @@ import indianParts from '../data/parts.js';
 export default function CompareModal({ isOpen, onClose, userState, onSelectInquiry, initialVehicleId }) {
   const [mode, setMode] = useState('vehicles');
   const [selectedState, setSelectedState] = useState(userState || 'Maharashtra');
-  
+
   const [availableVehicles, setAvailableVehicles] = useState(indianCars);
   const [availableParts, setAvailableParts] = useState(indianParts);
-  
+
   const [selectedVehicleIds, setSelectedVehicleIds] = useState([indianCars[0].id, indianCars[1]?.id || indianCars[0].id]);
   const [selectedPartIds, setSelectedPartIds] = useState([indianParts[0].id, indianParts[1]?.id || indianParts[0].id]);
 
@@ -133,19 +133,19 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
   };
 
   return (
-    <div 
-      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]" 
-      onClick={onClose} 
-      role="dialog" 
+    <div
+      className="modal-backdrop fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-[fadeIn_0.25s_ease-out]"
+      onClick={onClose}
+      role="dialog"
       aria-modal="true"
     >
-      <div 
-        className="modal-card relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden" 
+      <div
+        className="modal-card relative w-full max-w-5xl max-h-[90vh] flex flex-col bg-[#171814] border border-[#c5a77a]/30 shadow-2xl p-5 sm:p-8 text-white rounded-xs overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <button 
-          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10" 
-          onClick={onClose} 
+        <button
+          className="modal-close absolute top-5 right-5 w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white hover:border-[#c5a77a] transition-colors cursor-pointer text-sm z-10"
+          onClick={onClose}
           aria-label="Close dialog"
         >
           ✕
@@ -161,7 +161,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                 Compare Specifications &amp; Lowest Dealer Prices
               </h2>
             </div>
-            
+
             <div className="state-picker-group flex items-center gap-2 text-xs text-[#aaa]">
               <label htmlFor="comp-state-select" className="text-[10px] uppercase tracking-wider text-[#888]">Location:</label>
               <select
@@ -179,18 +179,16 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
 
           <div className="modal-tabs flex items-center gap-2 mt-4">
             <button
-              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-                mode === 'vehicles' ? 'bg-[#c5a77a] text-[#11120f]' : 'bg-white/5 text-[#aaa] hover:text-white'
-              }`}
+              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${mode === 'vehicles' ? 'bg-[#c5a77a] text-[#11120f]' : 'bg-white/5 text-[#aaa] hover:text-white'
+                }`}
               onClick={() => { setMode('vehicles'); setComparisonData(null); }}
               type="button"
             >
               Compare Vehicles (Side-by-Side)
             </button>
             <button
-              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
-                mode === 'parts' ? 'bg-[#c5a77a] text-[#11120f]' : 'bg-white/5 text-[#aaa] hover:text-white'
-              }`}
+              className={`modal-tab px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${mode === 'parts' ? 'bg-[#c5a77a] text-[#11120f]' : 'bg-white/5 text-[#aaa] hover:text-white'
+                }`}
               onClick={() => { setMode('parts'); setComparisonData(null); }}
               type="button"
             >
@@ -204,7 +202,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
           <span className="selector-title text-[10px] text-[#888] uppercase tracking-wider block mb-2">
             Select up to 3 {mode === 'vehicles' ? 'cars' : 'items'} to compare:
           </span>
-          
+
           <div className="pills-scroll flex items-center gap-2 overflow-x-auto pb-1">
             {mode === 'vehicles' ? (
               availableVehicles.map((v) => {
@@ -213,11 +211,10 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                   <button
                     key={`v-pill-${v.id}`}
                     type="button"
-                    className={`item-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors border ${
-                      isSelected 
-                        ? 'bg-[#c5a77a] text-[#11120f] border-[#c5a77a] font-semibold' 
+                    className={`item-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors border ${isSelected
+                        ? 'bg-[#c5a77a] text-[#11120f] border-[#c5a77a] font-semibold'
                         : 'bg-white/5 text-[#ccc] border-white/10 hover:border-white/30'
-                    }`}
+                      }`}
                     onClick={() => toggleVehicleId(v.id)}
                   >
                     {isSelected && <span className="pill-check mr-1 font-bold">✓</span>}
@@ -232,11 +229,10 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                   <button
                     key={`p-pill-${p.id}`}
                     type="button"
-                    className={`item-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors border ${
-                      isSelected 
-                        ? 'bg-[#c5a77a] text-[#11120f] border-[#c5a77a] font-semibold' 
+                    className={`item-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-colors border ${isSelected
+                        ? 'bg-[#c5a77a] text-[#11120f] border-[#c5a77a] font-semibold'
                         : 'bg-white/5 text-[#ccc] border-white/10 hover:border-white/30'
-                    }`}
+                      }`}
                     onClick={() => togglePartId(p.id)}
                   >
                     {isSelected && <span className="pill-check mr-1 font-bold">✓</span>}
@@ -276,18 +272,18 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                   </div>
                   <h3 className="text-base font-semibold text-white mb-1.5">{comparisonData.ai_verdict.headline}</h3>
                   <p className="verdict-summary text-xs text-[#a9aaa3] leading-relaxed mb-4">{comparisonData.ai_verdict.summary}</p>
-                  
+
                   {comparisonData.ai_verdict.cheapest_option && (
                     <div className="cheapest-dealer-callout bg-white/5 border  p-4 rounded-xs grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                       <div className="callout-badge col-span-full text-[9px] uppercase tracking-wider font-bold mb-1">
                         CHEAPEST DEALER IN {selectedState.toUpperCase()}
                       </div>
-                      
+
                       <div className="callout-vehicle-group">
                         <h4 className="callout-vehicle-name font-semibold text-white">
                           {comparisonData.ai_verdict.cheapest_option.vehicle_name}
                         </h4>
-                        <div className="callout-vehicle-price text-emerald-400 font-bold text-sm mt-0.5">
+                        <div className="callout-vehicle-price text-[#c5a77a]-400 font-bold text-sm mt-0.5">
                           {comparisonData.ai_verdict.cheapest_option.price}
                         </div>
                       </div>
@@ -301,7 +297,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
 
                       <div className="callout-meta-group">
                         <span className="callout-meta-label text-[9px] uppercase tracking-wider text-[#888] block">YOUR DIRECT SAVINGS:</span>
-                        <div className="callout-savings-value text-emerald-400 font-semibold mt-0.5">
+                        <div className="callout-savings-value text-[#c5a77a]-400 font-semibold mt-0.5">
                           Save {comparisonData.ai_verdict.cheapest_option.savings_vs_competitor}
                         </div>
                       </div>
@@ -313,7 +309,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
               <div className="table-scroll-hint md:hidden text-center text-[10px] text-[#888] mb-2 uppercase tracking-wider">
                 ⟵ Swipe horizontally to compare cars &amp; dealers ⟶
               </div>
-              
+
               <div className="table-responsive overflow-x-auto border border-white/10 rounded-xs bg-[#181916]">
                 {Array.isArray(comparisonData.comparison) ? (
                   <table className="comparison-table w-full text-left border-collapse text-xs">
@@ -325,10 +321,10 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                         {comparisonData.comparison.map((item) => (
                           <th key={`head-${item.vehicle.id}`} className="vehicle-col min-w-[240px] p-4 border-r border-white/10 last:border-r-0">
                             <div className="table-car-header flex flex-col items-center text-center">
-                              <img 
-                                src={item.vehicle.full_image_url || '/assets/images/fallback-car.jpg'} 
-                                alt={item.vehicle.name} 
-                                className="table-car-img w-28 h-16 object-cover rounded-xs mb-2" 
+                              <img
+                                src={item.vehicle.full_image_url || '/assets/images/fallback-car.jpg'}
+                                alt={item.vehicle.name}
+                                className="table-car-img w-28 h-16 object-cover rounded-xs mb-2"
                               />
                               <h4 className="font-semibold text-white text-sm">{item.vehicle.name}</h4>
                               <span className="table-car-variant text-[10px] text-[#888] uppercase block">{item.vehicle.variant || item.vehicle.category}</span>
@@ -364,8 +360,8 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                                   </div>
                                   <div className="price-offer-box bg-white/5 p-2 rounded-xs">
                                     <span className="offer-label text-[9px] uppercase tracking-wider text-[#888] block">Cheapest Offer Price:</span>
-                                    <span className="offer-val text-emerald-400 font-bold text-sm block">{bd.formatted_final_price}</span>
-                                    <span className="offer-discount text-[10px] text-emerald-400 font-semibold block">
+                                    <span className="offer-val text-[#c5a77a]-400 font-bold text-sm block">{bd.formatted_final_price}</span>
+                                    <span className="offer-discount text-[10px] text-[#c5a77a]-400 font-semibold block">
                                       Save ₹{bd.dealer_discount ? bd.dealer_discount.toLocaleString('en-IN') : '0'}
                                     </span>
                                   </div>
@@ -472,12 +468,11 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                             <div className="dealers-list-mini space-y-2">
                               {Array.isArray(item.all_dealer_offers) && item.all_dealer_offers.length > 0 ? (
                                 item.all_dealer_offers.map((d, idx) => (
-                                  <div 
-                                    className={`dealer-row-item flex justify-between p-2.5 rounded-xs text-[10px] ${
-                                      d.is_cheapest 
-                                        ? 'bg-emerald-500/10 border-l-2 border-emerald-400' 
+                                  <div
+                                    className={`dealer-row-item flex justify-between p-2.5 rounded-xs text-[10px] ${d.is_cheapest
+                                        ? 'bg-[#c5a77a]-500/10 border-l-2 border-[#c5a77a]-400'
                                         : 'bg-white/5 border-b border-white/5'
-                                    }`} 
+                                      }`}
                                     key={`dlist-${d.dealer_id}`}
                                   >
                                     <div className="d-info space-y-0.5">
@@ -487,7 +482,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                                     <div className="d-price text-right shrink-0">
                                       <span className="font-semibold text-white block">{d.formatted_final_price}</span>
                                       {Number(d.dealer_discount) > 0 && (
-                                        <small className="text-emerald-400 block">-₹{Number(d.dealer_discount).toLocaleString('en-IN')}</small>
+                                        <small className="text-[#c5a77a]-400 block">-₹{Number(d.dealer_discount).toLocaleString('en-IN')}</small>
                                       )}
                                     </div>
                                   </div>
@@ -514,7 +509,7 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
               <div className="table-scroll-hint md:hidden text-center text-[10px] text-[#888] mb-2 uppercase tracking-wider">
                 ⟵ Swipe horizontally to compare items &amp; sellers ⟶
               </div>
-              
+
               <div className="table-responsive overflow-x-auto border border-white/10 rounded-xs bg-[#181916]">
                 {Array.isArray(comparisonData.comparison) ? (
                   <table className="comparison-table w-full text-left border-collapse text-xs">
@@ -556,8 +551,8 @@ export default function CompareModal({ isOpen, onClose, userState, onSelectInqui
                                   </div>
                                   <div className="price-offer-box bg-white/5 p-2 rounded-xs">
                                     <span className="offer-label text-[9px] uppercase tracking-wider text-[#888] block">Best Deal Price:</span>
-                                    <span className="offer-val text-emerald-400 font-bold text-sm block">{bd.formatted_price}</span>
-                                    <span className="offer-discount text-[10px] text-emerald-400 font-semibold block">{bd.discount_percent}% OFF MRP</span>
+                                    <span className="offer-val text-[#c5a77a]-400 font-bold text-sm block">{bd.formatted_price}</span>
+                                    <span className="offer-discount text-[10px] text-[#c5a77a]-400 font-semibold block">{bd.discount_percent}% OFF MRP</span>
                                   </div>
                                   <div className="installation-tag text-[10px] text-[#aaa]">
                                     {bd.installation_available ? '🔧 Free Installation Available' : 'Self-Fit'} · Delivery: {bd.delivery_days} Day(s)
