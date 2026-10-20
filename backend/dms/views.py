@@ -1,44 +1,10 @@
-from rest_framework import viewsets, permissions, status, filters
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import User, Dealer, Lead
-from .serializers import UserSerializer, RegisterSerializer, DealerSerializer, LeadSerializer
-
-
-class DealerViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Dealer.objects.all()
-    serializer_class = DealerSerializer
-    permission_classes = [permissions.AllowAny]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'brand_focus', 'city', 'state', 'address']
-    ordering_fields = ['rating', 'name']
-
-    def get_queryset(self):
-        queryset = Dealer.objects.all()
-        state = self.request.query_params.get('state')
-        if state and state != 'all':
-            queryset = queryset.filter(state=state)
-        city = self.request.query_params.get('city')
-        if city:
-            queryset = queryset.filter(city__iexact=city)
-        brand = self.request.query_params.get('brand')
-        if brand:
-            queryset = queryset.filter(brand_focus__icontains=brand)
-        return queryset
-
-
-class LeadViewSet(viewsets.ModelViewSet):
-    queryset = Lead.objects.all()
-    serializer_class = LeadSerializer
-    permission_classes = [permissions.AllowAny]
-
-    def get_queryset(self):
-        queryset = Lead.objects.all()
-        state = self.request.query_params.get('state')
-        if state and state != 'all':
-            queryset = queryset.filter(state=state)
-        return queryset
-
+"""
+views.py
+--------
+User Authentication, Dealership Directory & Lead Management Views for Aurel India.
+Only User profile details are stored in the database; automotive searches and comparisons
+are delegated to the AI search and discovery engine.
+"""
 
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.views import APIView
@@ -51,6 +17,10 @@ from .serializers import UserSerializer, RegisterSerializer, DealerSerializer, L
 
 
 class DealerViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Read-only view for registered authorized dealerships,
+    supporting filtering by state, city, and brand.
+    """
     queryset = Dealer.objects.all()
     serializer_class = DealerSerializer
     permission_classes = [permissions.AllowAny]
@@ -61,8 +31,8 @@ class DealerViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = Dealer.objects.all()
         state = self.request.query_params.get('state')
-        if state and state != 'all':
-            queryset = queryset.filter(state=state)
+        if state and state != 'all' and state != 'All India':
+            queryset = queryset.filter(state__iexact=state)
         city = self.request.query_params.get('city')
         if city:
             queryset = queryset.filter(city__iexact=city)
@@ -73,6 +43,9 @@ class DealerViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LeadViewSet(viewsets.ModelViewSet):
+    """
+    Inquiry & Lead Management for client test drives and callbacks.
+    """
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
     permission_classes = [permissions.AllowAny]
@@ -80,8 +53,8 @@ class LeadViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Lead.objects.all()
         state = self.request.query_params.get('state')
-        if state and state != 'all':
-            queryset = queryset.filter(state=state)
+        if state and state != 'all' and state != 'All India':
+            queryset = queryset.filter(state__iexact=state)
         return queryset
 
 

@@ -1,3 +1,16 @@
+"""
+seed_data.py
+------------
+Development Database Seeder for Aurel India.
+
+NOTE FOR LEARNERS / DEVELOPERS:
+- Per system architecture, the database only stores User authentication/profile details.
+- Car models, accessories, and dealer offers are queried dynamically via the AI search engine.
+- This script is an optional utility to initialize a default admin user and seed sample data
+  if you ever want to test Django Admin models locally.
+  Usage: python seed_data.py
+"""
+
 import os
 import django
 import datetime

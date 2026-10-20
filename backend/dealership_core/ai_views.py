@@ -8,12 +8,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
-from inventory.models import Vehicle, DealerVehiclePrice
-from inventory.serializers import VehicleSerializer, DealerVehiclePriceSerializer
-from ecommerce.models import Part, DealerPartPrice
-from ecommerce.serializers import PartSerializer, DealerPartPriceSerializer
-from dms.models import Dealer
-from dms.serializers import DealerSerializer
 from dealership_core.ai_web_searcher import (
     search_internet_automotive,
     compare_internet_items,
@@ -22,8 +16,14 @@ from dealership_core.ai_web_searcher import (
     STATE_RTO_RATES
 )
 
-# Load optional GEMINI_API_KEY from environment or .env file
+# --------------------------------------------------------------------------
+# 1. Gemini AI Client Setup
+# --------------------------------------------------------------------------
 def get_gemini_api_key():
+    """
+    Finds the Gemini API key from environment variables or .env file.
+    Returns the key string if found, otherwise None.
+    """
     key = os.environ.get('GEMINI_API_KEY') or os.environ.get('GOOGLE_API_KEY')
     if key:
         return key.strip()
@@ -45,6 +45,9 @@ def get_gemini_api_key():
 
 
 def init_gemini_client():
+    """
+    Initializes and returns the official Google GenAI client if an API key is available.
+    """
     api_key = get_gemini_api_key()
     if not api_key:
         return None
@@ -57,6 +60,10 @@ def init_gemini_client():
 
 
 def format_inr(val):
+    """
+    Helper function to format numbers into Indian Rupees (Lakh / Crore / Thousands).
+    Example: 2699000 -> ₹26.99 Lakh
+    """
     if not val:
         return "₹0"
     v = float(val)
@@ -202,17 +209,21 @@ def parse_user_intent(query, user_state):
 
 
 # --------------------------------------------------------------------------
-# Multi-Criteria Scoring & Ranking Engine
+# Multi-Criteria Scoring & Ranking Helper
 # --------------------------------------------------------------------------
-def score_vehicle(vehicle, intent, state):
+def score_vehicle_dict(v, intent):
     """
-    Computes an authoritative suitability score (0 to 100) based on
-    budget compliance, powertrain preference, seating, safety, and dealer discount.
+    Computes a beginner-friendly suitability score (0 to 100) for a car based on:
+    1. Budget match (+25 if under budget, -20 if over budget)
+    2. Fuel preference (+25 if matches EV/Diesel/Petrol/Hybrid)
+    3. Seating capacity (+20 if matches requested 5/6/7 seats)
+    4. Exact model match (+35 if user named this exact car)
+    5. High safety rating (+15 if 5-Star NCAP)
     """
     score = 50.0
-    v_price = float(vehicle.price)
+    v_price = float(v.get('price', 0))
 
-    # Budget weighting
+    # 1. Budget check
     if intent['budget_max']:
         if v_price <= intent['budget_max']:
             score += 25.0
@@ -221,51 +232,30 @@ def score_vehicle(vehicle, intent, state):
         else:
             score -= 20.0
 
-    # Fuel type weighting
+    # 2. Fuel type check
     if intent['fuel_type']:
-        if vehicle.fuel_type == intent['fuel_type']:
+        if v.get('fuel_type') == intent['fuel_type']:
             score += 25.0
-        elif intent['fuel_type'] == 'HYBRID' and vehicle.fuel_type in ['PETROL', 'ELECTRIC']:
+        elif intent['fuel_type'] == 'HYBRID' and v.get('fuel_type') in ['PETROL', 'ELECTRIC']:
             score += 10.0
         else:
             score -= 15.0
 
-    # Seating capacity weighting
+    # 3. Seating capacity check
     if intent['seating']:
-        if vehicle.seating_capacity == intent['seating']:
+        v_seats = v.get('seating_capacity') or 5
+        if v_seats == intent['seating']:
             score += 20.0
-        elif intent['seating'] >= 6 and vehicle.seating_capacity >= 6:
+        elif intent['seating'] >= 6 and v_seats >= 6:
             score += 15.0
-        else:
-            score -= 15.0
 
-    # Body type
-    if intent['body_type'] and vehicle.body_type == intent['body_type']:
-        score += 12.0
-
-    # Model match
-    if intent['model_name'] and intent['model_name'] in vehicle.name.lower():
+    # 4. Exact model name match (e.g., 'creta', 'safari', 'xuv700')
+    if intent['model_name'] and intent['model_name'] in v.get('name', '').lower():
         score += 35.0
 
-    # Priority weighting
-    if intent['priority'] == 'safety':
-        if '5' in str(vehicle.safety_rating):
-            score += 15.0
-    elif intent['priority'] == 'mileage':
-        if vehicle.fuel_type == 'ELECTRIC' or (vehicle.mileage_arai and float(re.search(r'\d+', vehicle.mileage_arai).group() if re.search(r'\d+', vehicle.mileage_arai) else 0) >= 17):
-            score += 15.0
-    elif intent['priority'] == 'automatic':
-        if 'AT' in vehicle.transmission or 'DCT' in vehicle.transmission or 'e-CVT' in vehicle.transmission or vehicle.fuel_type == 'ELECTRIC':
-            score += 15.0
-
-    # State dealer discount bonus
-    best_dealer = vehicle.get_best_dealer_price(state=state)
-    if best_dealer and float(best_dealer.dealer_discount) > 0:
-        disc_val = float(best_dealer.dealer_discount)
-        if disc_val >= 100000:
-            score += 10.0
-        elif disc_val >= 40000:
-            score += 6.0
+    # 5. Safety priority
+    if intent['priority'] == 'safety' and '5' in str(v.get('safety_rating', '')):
+        score += 15.0
 
     return max(0.0, min(100.0, score))
 
@@ -425,11 +415,6 @@ def universal_search(request):
     return Response(search_res)
 
 
-def models_q(**kwargs):
-    from django.db.models import Q
-    return Q(**kwargs)
-
-
 # --------------------------------------------------------------------------
 # Trained AI Automotive Advisor
 # --------------------------------------------------------------------------
@@ -461,34 +446,7 @@ def ai_advisor(request):
     # 3. Score and rank vehicles with multi-criteria engine
     scored_vehicles = []
     for v in all_vehicles:
-        # Score calculation for dictionary vehicle
-        score = 50.0
-        v_price = float(v.get('price', 0))
-        if intent['budget_max']:
-            if v_price <= intent['budget_max']:
-                score += 25.0
-            elif v_price <= intent['budget_max'] * 1.12:
-                score += 5.0
-            else:
-                score -= 20.0
-
-        if intent['fuel_type']:
-            if v.get('fuel_type') == intent['fuel_type']:
-                score += 25.0
-            elif intent['fuel_type'] == 'HYBRID' and v.get('fuel_type') in ['PETROL', 'ELECTRIC']:
-                score += 10.0
-            else:
-                score -= 15.0
-
-        if intent['seating']:
-            if v.get('seating_capacity') == intent['seating']:
-                score += 20.0
-            elif intent['seating'] >= 6 and (v.get('seating_capacity') or 5) >= 6:
-                score += 15.0
-
-        if intent['model_name'] and intent['model_name'] in v.get('name', '').lower():
-            score += 35.0
-
+        score = score_vehicle_dict(v, intent)
         best_dp = v.get('best_dealer_in_state')
         scored_vehicles.append({
             'score': score,
