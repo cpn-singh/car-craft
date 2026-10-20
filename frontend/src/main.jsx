@@ -39,7 +39,6 @@ class ErrorBoundary extends React.Component {
             borderRadius: '16px',
             padding: '36px 28px',
           }}>
-            <span style={{ fontSize: '32px', marginBottom: '16px', display: 'block' }}>⚠️</span>
             <h1 style={{ fontSize: '22px', fontWeight: 600, margin: '0 0 12px 0', letterSpacing: '-0.02em' }}>
               Something encountered an issue while loading
             </h1>

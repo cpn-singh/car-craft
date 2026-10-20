@@ -1,9 +1,16 @@
+/**
+ * CompareSection.jsx
+ * -------------------
+ * Inline Vehicle Comparison (Landing Page)
+ * Styled with Tailwind CSS
+ */
+
 import React, { useState, useEffect } from 'react';
 import { compareVehicles, INDIAN_STATES } from '../services/api.js';
 import indianCars from '../data/cars.js';
 
 export default function CompareSection({ userState, onStateChange, onInquireVehicle }) {
-  const [selectedIds, setSelectedIds] = useState([7, 8]); // Default XUV700 & Tata Safari
+  const [selectedIds, setSelectedIds] = useState([7, 8]); 
   const [comparison, setComparison] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +23,7 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
         if (isMounted) setComparison(res);
       })
       .catch((err) => {
-        console.warn('Comparison API notice, using merged data:', err);
+        console.warn('Comparison API failed, using merged local data instead:', err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -29,13 +36,13 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
 
   function handleSelectCar(slotIndex, newId) {
     const updated = [...selectedIds];
-    updated[slotIndex] = parseInt(newId);
+    updated[slotIndex] = parseInt(newId, 10);
     setSelectedIds(updated);
   }
 
   function addThirdCar() {
     if (selectedIds.length === 2) {
-      setSelectedIds([...selectedIds, 9]); // Add Creta
+      setSelectedIds([...selectedIds, 9]); 
     }
   }
 
@@ -45,48 +52,56 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
     }
   }
 
-  // Fallback items from indianCars
   const activeCars = selectedIds.map((id) => indianCars.find((c) => c.id === id) || indianCars[0]);
 
   return (
-    <section className="section-pad compare-section" id="compare">
-      <div className="section-label">
+    <section 
+      className="section-pad compare-section pt-16 md:pt-24 pb-20 md:pb-28 px-4 sm:px-[7%] lg:px-[11.5%] bg-[#11120f] text-white" 
+      id="compare"
+    >
+      <div className="section-label flex justify-between pb-[19px] border-b border-white/15 text-[#c9c5ba] text-[9px] tracking-[0.22em] uppercase font-sans">
         <span>03 / SIDE-BY-SIDE COMPARISON</span>
-          <span>LOCAL PRICES · {userState.toUpperCase()}</span>
+        <span>LOCAL PRICES · {(userState || 'India').toUpperCase()}</span>
       </div>
 
-      <div className="compare-section-header">
+      <div className="compare-section-header flex flex-col md:flex-row md:items-end justify-between pt-8 gap-4">
         <div>
-          <h2>Two cars, <em>side by side.</em></h2>
-          <p>Compare key specifications and listed dealer offers in {userState}. Confirm final prices and availability with the showroom.</p>
+          <h2 className="font-light text-[clamp(34px,5.5vw,76px)] leading-[1.05] tracking-[-0.065em] m-0 text-white">
+            Two cars, <em className="font-serif font-normal italic text-[#c5a77a]">side by side.</em>
+          </h2>
+          <p className="text-xs text-[#a9aaa3] mt-3 max-w-md leading-relaxed">
+            Compare key specifications and listed dealer offers in {userState}. Confirm final prices and availability with the showroom.
+          </p>
         </div>
 
-        <div className="state-picker-wrap">
-          <span className="picker-label">Location:</span>
+        <div className="state-picker-wrap flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xs self-start md:self-auto">
+          <span className="picker-label text-[10px] text-[#888880] uppercase tracking-wider">Location:</span>
           <select
-            className="state-select-stylish"
+            className="state-select-stylish bg-transparent border-0 text-white text-xs outline-none cursor-pointer pr-1"
             value={userState}
             onChange={(e) => onStateChange(e.target.value)}
           >
-            {INDIAN_STATES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+            {(INDIAN_STATES || []).map((s) => (
+              <option key={`state-${s}`} value={s} className="bg-[#181916] text-white">{s}</option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* Car Selectors Row */}
-      <div className="car-selectors-row">
+      {/* --- Car Selectors Row --- */}
+      <div className="car-selectors-row flex flex-wrap items-center gap-3 my-6 p-4 bg-[#181916] border border-white/10 rounded-xs">
         {selectedIds.map((id, slotIndex) => (
-          <div className="car-select-slot" key={slotIndex}>
-            <span className="slot-label">Vehicle {slotIndex + 1}:</span>
+          <div className="car-select-slot flex items-center gap-2 flex-1 min-w-[200px]" key={`slot-${slotIndex}`}>
+            <span className="slot-label text-[10px] text-[#c5a77a] font-semibold uppercase tracking-wider shrink-0">
+              Vehicle {slotIndex + 1}:
+            </span>
             <select
-              className="car-dropdown"
+              className="car-dropdown bg-[#11120f] border border-white/15 text-white text-xs px-3 py-2 rounded-xs outline-none w-full cursor-pointer focus:border-[#c5a77a]"
               value={id}
               onChange={(e) => handleSelectCar(slotIndex, e.target.value)}
             >
               {indianCars.map((c) => (
-                <option key={c.id} value={c.id}>
+                <option key={`opt-${c.id}`} value={c.id} className="bg-[#181916] text-white">
                   {c.name} ({c.formatted_price})
                 </option>
               ))}
@@ -95,49 +110,59 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
         ))}
 
         {selectedIds.length === 2 ? (
-          <button type="button" className="add-compare-btn" onClick={addThirdCar}>
+          <button 
+            type="button" 
+            className="add-compare-btn px-3.5 py-2 text-xs font-semibold uppercase tracking-wider border border-[#c5a77a] text-[#c5a77a] hover:bg-[#c5a77a]/10 rounded-xs transition-colors cursor-pointer"
+            onClick={addThirdCar}
+          >
             + Add 3rd Car
           </button>
         ) : (
-          <button type="button" className="remove-compare-btn" onClick={removeThirdCar}>
+          <button 
+            type="button" 
+            className="remove-compare-btn px-3.5 py-2 text-xs font-semibold uppercase tracking-wider border border-red-500/40 text-red-400 hover:bg-red-500/10 rounded-xs transition-colors cursor-pointer"
+            onClick={removeThirdCar}
+          >
             ✕ Remove 3rd Car
           </button>
         )}
       </div>
 
-      {/* AI Comparison Content */}
+      {/* --- AI Comparison Content --- */}
       <div className="compare-card-container">
         {comparison?.ai_verdict && (
-          <div className="ai-verdict-banner-inline">
-            <div className="verdict-tag">A QUICK PRICE SUMMARY · {userState.toUpperCase()}</div>
-            <h3>{comparison.ai_verdict.headline}</h3>
-            <p>{comparison.ai_verdict.summary}</p>
+          <div className="ai-verdict-banner-inline bg-[#181a18] border border-[#c5a77a]/30 p-5 rounded-xs my-6">
+            <div className="verdict-tag text-[9px] uppercase tracking-[0.2em] text-[#c5a77a] font-semibold mb-2 block">
+              A QUICK PRICE SUMMARY · {(userState || 'INDIA').toUpperCase()}
+            </div>
+            <h3 className="text-base font-semibold text-white mb-1.5">{comparison.ai_verdict.headline}</h3>
+            <p className="text-xs text-[#a9aaa3] leading-relaxed mb-4">{comparison.ai_verdict.summary}</p>
 
             {comparison.ai_verdict.cheapest_option && (
-              <div className="cheapest-dealer-callout">
-                <div className="callout-badge">
-                  CHEAPEST DEALER IN {userState.toUpperCase()}
+              <div className="cheapest-dealer-callout bg-white/5 border border-[#c5a77a]/30 p-4 rounded-xs mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div className="callout-badge col-span-full text-[11px] uppercase tracking-wider text-[#c5a77a] font-bold mb-1">
+                  CHEAPEST DEALER IN {(userState || 'INDIA').toUpperCase()}
                 </div>
                 
                 <div className="callout-vehicle-group">
-                  <h4 className="callout-vehicle-name">
+                  <h4 className="callout-vehicle-name font-semibold text-white">
                     {comparison.ai_verdict.cheapest_option.vehicle_name}
                   </h4>
-                  <div className="callout-vehicle-price">
+                  <div className="callout-vehicle-price text-[#c5a77a] font-bold text-sm mt-0.5">
                     {comparison.ai_verdict.cheapest_option.price}
                   </div>
                 </div>
 
                 <div className="callout-meta-group">
-                  <span className="callout-meta-label">VERIFIED DEALER:</span>
-                  <div className="callout-dealer-name">
+                  <span className="callout-meta-label text-[9px] uppercase tracking-wider text-[#888] block">VERIFIED DEALER:</span>
+                  <div className="callout-dealer-name text-white font-medium mt-0.5 truncate">
                     {comparison.ai_verdict.cheapest_option.dealer} ({comparison.ai_verdict.cheapest_option.city})
                   </div>
                 </div>
 
                 <div className="callout-meta-group">
-                  <span className="callout-meta-label">YOUR DIRECT SAVINGS:</span>
-                  <div className="callout-savings-value">
+                  <span className="callout-meta-label text-[9px] uppercase tracking-wider text-[#888] block">YOUR DIRECT SAVINGS:</span>
+                  <div className="callout-savings-value text-[#c5a77a] font-semibold mt-0.5">
                     Save {comparison.ai_verdict.cheapest_option.savings_vs_competitor}
                   </div>
                 </div>
@@ -146,29 +171,30 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
           </div>
         )}
 
-        {/* Scroll indicator for mobile/tablet */}
-        <div className="table-scroll-hint" aria-hidden="true">
+        <div className="table-scroll-hint md:hidden text-center text-[10px] text-[#888] mb-2 uppercase tracking-wider" aria-hidden="true">
           <span>⟵ Swipe horizontally to compare cars &amp; dealers ⟶</span>
         </div>
 
-        {/* Side by side comparison table */}
-        <div className="table-responsive">
-          <table className="comparison-table inpage-table">
+        {/* --- Side by side comparison table --- */}
+        <div className={`table-responsive overflow-x-auto my-4 border border-white/10 rounded-xs bg-[#181916] ${loading ? 'opacity-50' : ''}`}>
+          <table className="comparison-table inpage-table w-full text-left border-collapse text-xs">
             <thead>
-              <tr>
-                <th className="feature-col">Specification / Dealer Offer</th>
+              <tr className="border-b border-white/10 bg-white/[0.02]">
+                <th className="feature-col w-1/4 min-w-[170px] p-4 text-[#c9c5ba] uppercase tracking-wider text-[10px] font-semibold border-r border-white/10">
+                  Specification / Dealer Offer
+                </th>
                 {activeCars.map((car, idx) => {
                   const compItem = comparison?.comparison?.[idx];
-                  const displayImg = compItem?.vehicle?.full_image_url || car.full_image_url;
+                  const displayImg = compItem?.vehicle?.full_image_url || car.full_image_url || '/assets/images/fallback-car.jpg';
                   const displayName = compItem?.vehicle?.name || car.name;
                   const displayPrice = compItem?.vehicle?.formatted_price || car.formatted_price;
 
                   return (
-                    <th key={car.id} className="vehicle-col">
-                      <div className="table-car-header">
-                        <img src={displayImg} alt={displayName} className="table-car-img" />
-                        <h4>{displayName}</h4>
-                        <span className="table-car-base-price">Base: {displayPrice}</span>
+                    <th key={`head-col-${car.id}`} className="vehicle-col min-w-[240px] p-4 border-r border-white/10 last:border-r-0">
+                      <div className="table-car-header flex flex-col items-center text-center">
+                        <img src={displayImg} alt={displayName} className="table-car-img w-28 h-16 object-cover rounded-xs mb-2" loading="lazy" />
+                        <h4 className="font-semibold text-white text-sm">{displayName}</h4>
+                        <span className="table-car-base-price text-[11px] text-[#c5a77a] mt-0.5 font-medium">Base: {displayPrice}</span>
                       </div>
                     </th>
                   );
@@ -177,13 +203,12 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
             </thead>
 
             <tbody>
-              {/* CHEAPEST DEALER IN STATE */}
-              <tr className="highlight-row">
-                <td className="feature-label feature-label-dealer">
+              {/* --- CHEAPEST DEALER IN STATE --- */}
+              <tr className="highlight-row border-b border-white/10 bg-white/[0.01]">
+                <td className="feature-label feature-label-dealer p-4 border-r border-white/10 align-top">
                   <div className="feature-label-inner">
-                    <span className="dealer-trophy">🏆</span>
-                    <strong>Best Dealer</strong>
-                    <span className="feature-sub">Offer in {userState}</span>
+                    <strong className="text-white block font-semibold">Best Dealer</strong>
+                    <span className="feature-sub text-[10px] text-[#888] block">Offer in {userState}</span>
                   </div>
                 </td>
                 {activeCars.map((car, idx) => {
@@ -195,90 +220,97 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
                   const onRoad = compItem?.best_dealer?.formatted_on_road || car.best_dealer_offer?.formatted_on_road;
 
                   return (
-                    <td key={car.id} className="vehicle-col best-dealer-cell">
+                    <td key={`dealer-cell-${car.id}`} className="vehicle-col best-dealer-cell p-4 border-r border-white/10 last:border-r-0 align-top">
                       {bestD ? (
-                        <div className="dealer-card-compact">
-                          <div className="dealer-header-mini">
-                            <span className="dealer-name">{bestD.dealer_name || bestD.name}</span>
-                            <span className="dealer-rating">★ {bestD.rating}</span>
+                        <div className="dealer-card-compact bg-[#11120f] border border-[#c5a77a]/30 p-3.5 rounded-xs space-y-2">
+                          <div className="dealer-header-mini flex items-center justify-between">
+                            <span className="dealer-name font-semibold text-white truncate">{bestD.dealer_name || bestD.name}</span>
+                            <span className="dealer-rating text-[#c5a77a] font-bold text-[10px] shrink-0 ml-1">★ {bestD.rating || '4.0'}</span>
                           </div>
-                          <div className="dealer-address-mini">
-                            📍 {bestD.address}, {bestD.city}
+                          <div className="dealer-address-mini text-[10px] text-[#888] truncate">
+                            {bestD.address}, {bestD.city}
                           </div>
-                          <div className="dealer-phone-mini">
-                            📞 <a href={`tel:${bestD.phone}`} className="phone-link">{bestD.phone}</a>
+                          <div className="dealer-phone-mini text-[10px]">
+                            <a href={`tel:${bestD.phone}`} className="phone-link text-[#c5a77a] hover:underline">{bestD.phone}</a>
                           </div>
-                          <div className="price-offer-box">
-                            <span className="offer-label">Cheapest Offer Price:</span>
-                            <span className="offer-val">{finalPrice}</span>
-                            {discount > 0 && (
-                              <span className="offer-discount">Save ₹{Number(discount).toLocaleString()} Discount</span>
+                          <div className="price-offer-box bg-white/5 p-2 rounded-xs">
+                            <span className="offer-label text-[9px] uppercase tracking-wider text-[#888] block">Cheapest Offer:</span>
+                            <span className="offer-val text-emerald-400 font-bold text-sm block">{finalPrice}</span>
+                            {Number(discount) > 0 && (
+                              <span className="offer-discount text-[10px] text-emerald-400 font-semibold block">
+                                Save ₹{Number(discount).toLocaleString('en-IN')} Discount
+                              </span>
                             )}
                           </div>
                           {onRoad && (
-                            <div className="on-road-est">
-                              <span>Est. On-Road:</span> <strong>{onRoad}</strong>
+                            <div className="on-road-est text-[10px] text-[#aaa]">
+                              <span>Est. On-Road:</span> <strong className="text-white">{onRoad}</strong>
                             </div>
                           )}
-                          {perks && <div className="special-perk">🎁 {perks}</div>}
+                          {perks && <div className="special-perk text-[10px] text-[#c5a77a] bg-[#c5a77a]/10 p-1 rounded-xs">{perks}</div>}
                           <button
                             type="button"
-                            className="button button-gold-sm"
+                            className="button button-gold-sm w-full py-2 bg-[#c5a77a] hover:bg-[#b39364] text-[#11120f] font-semibold text-[10px] tracking-wider uppercase rounded-xs transition-colors cursor-pointer mt-2"
                             onClick={() => onInquireVehicle(car)}
                           >
                             Lock Best Deal ↗
                           </button>
                         </div>
                       ) : (
-                        <div className="dim-text">Direct dealership inquiry available</div>
+                        <div className="dim-text text-[#888] italic text-center py-4">Direct dealership inquiry available</div>
                       )}
                     </td>
                   );
                 })}
               </tr>
 
-              <tr>
-                <td className="feature-label">ARAI Mileage / Range</td>
+              {/* --- STANDARD SPECS --- */}
+              <tr className="border-b border-white/10">
+                <td className="feature-label p-4 font-medium text-[#c9c5ba] border-r border-white/10">ARAI Mileage / Range</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id} className="vehicle-col">
-                    <span className="stat-pill">{comparison?.comparison?.[idx]?.vehicle?.mileage_arai || car.mileage_arai}</span>
+                  <td key={`mil-${car.id}`} className="vehicle-col p-4 border-r border-white/10 last:border-r-0">
+                    <span className="stat-pill inline-block px-2.5 py-1 bg-white/5 rounded-full text-white font-medium text-[11px]">
+                      {comparison?.comparison?.[idx]?.vehicle?.mileage_arai || car.mileage_arai || 'N/A'}
+                    </span>
                   </td>
                 ))}
               </tr>
 
-              <tr>
-                <td className="feature-label">Safety Credential</td>
+              <tr className="border-b border-white/10">
+                <td className="feature-label p-4 font-medium text-[#c9c5ba] border-r border-white/10">Safety Credential</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id} className="vehicle-col">
-                    <span className="safety-badge">🛡️ {comparison?.comparison?.[idx]?.vehicle?.safety_rating || car.safety_rating}</span>
+                  <td key={`saf-${car.id}`} className="vehicle-col p-4 border-r border-white/10 last:border-r-0">
+                    <span className="safety-badge inline-block px-2.5 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-xs text-[11px] font-semibold">
+                      🛡️ {comparison?.comparison?.[idx]?.vehicle?.safety_rating || car.safety_rating || 'Unrated'}
+                    </span>
                   </td>
                 ))}
               </tr>
 
-              <tr>
-                <td className="feature-label">Fuel &amp; Transmission</td>
+              <tr className="border-b border-white/10">
+                <td className="feature-label p-4 font-medium text-[#c9c5ba] border-r border-white/10">Fuel &amp; Transmission</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id} className="vehicle-col">
+                  <td key={`fuel-${car.id}`} className="vehicle-col p-4 border-r border-white/10 last:border-r-0 text-white">
                     {comparison?.comparison?.[idx]?.vehicle?.fuel_type || car.fuel_type} · {comparison?.comparison?.[idx]?.vehicle?.transmission || car.transmission}
                   </td>
                 ))}
               </tr>
 
-              <tr>
-                <td className="feature-label">Seating Capacity</td>
+              <tr className="border-b border-white/10">
+                <td className="feature-label p-4 font-medium text-[#c9c5ba] border-r border-white/10">Seating Capacity</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id} className="vehicle-col">
+                  <td key={`seat-${car.id}`} className="vehicle-col p-4 border-r border-white/10 last:border-r-0 text-white">
                     {comparison?.comparison?.[idx]?.vehicle?.seating_capacity || car.seating_capacity} Seater
                   </td>
                 ))}
               </tr>
 
-              <tr>
-                <td className="feature-label">Engine &amp; Performance</td>
+              <tr className="border-b border-white/10">
+                <td className="feature-label p-4 font-medium text-[#c9c5ba] border-r border-white/10">Engine &amp; Performance</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id} className="vehicle-col">
-                    <div>{comparison?.comparison?.[idx]?.vehicle?.engine || car.engine}</div>
-                    <small className="dim-text">
+                  <td key={`eng-${car.id}`} className="vehicle-col p-4 border-r border-white/10 last:border-r-0">
+                    <div className="text-white font-medium">{comparison?.comparison?.[idx]?.vehicle?.engine || car.engine}</div>
+                    <small className="dim-text text-[10px] text-[#888] block mt-0.5">
                       {comparison?.comparison?.[idx]?.vehicle?.power_bhp || car.power_bhp} · {comparison?.comparison?.[idx]?.vehicle?.torque_nm || car.torque_nm}
                     </small>
                   </td>
@@ -286,10 +318,10 @@ export default function CompareSection({ userState, onStateChange, onInquireVehi
               </tr>
 
               <tr>
-                <td className="feature-label">Warranty Support</td>
+                <td className="feature-label p-4 font-medium text-[#c9c5ba] border-r border-white/10">Warranty Support</td>
                 {activeCars.map((car, idx) => (
-                  <td key={car.id} className="vehicle-col">
-                    {comparison?.comparison?.[idx]?.vehicle?.warranty_info || car.warranty_info}
+                  <td key={`war-${car.id}`} className="vehicle-col p-4 border-r border-white/10 last:border-r-0 text-white">
+                    {comparison?.comparison?.[idx]?.vehicle?.warranty_info || car.warranty_info || 'Standard Warranty'}
                   </td>
                 ))}
               </tr>
