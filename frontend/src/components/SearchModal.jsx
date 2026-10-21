@@ -30,6 +30,7 @@ export default function SearchModal({
 
   const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [slowLoading, setSlowLoading] = useState(false);
 
   useEffect(() => {
     if (userState) setSelectedState(userState);
@@ -53,8 +54,13 @@ export default function SearchModal({
     if (!isOpen) return;
 
     let isMounted = true;
+    let wakeTimer = null;
+
     const timeout = setTimeout(() => {
       setLoading(true);
+      wakeTimer = setTimeout(() => {
+        if (isMounted) setSlowLoading(true);
+      }, 3000);
 
       searchUniversal(query, categoryType, selectedState, sortBy)
         .then((data) => {
@@ -64,13 +70,18 @@ export default function SearchModal({
           console.error("Search API failed:", err);
         })
         .finally(() => {
-          if (isMounted) setLoading(false);
+          if (isMounted) {
+            setLoading(false);
+            setSlowLoading(false);
+          }
+          if (wakeTimer) clearTimeout(wakeTimer);
         });
     }, 250);
 
     return () => {
       isMounted = false;
       clearTimeout(timeout);
+      if (wakeTimer) clearTimeout(wakeTimer);
     };
   }, [query, categoryType, selectedState, sortBy, isOpen]);
 
@@ -178,9 +189,14 @@ export default function SearchModal({
 
         <div className="search-body flex-1 overflow-y-auto py-4 pr-1">
           {loading && (
-            <div className="loading-state flex flex-col items-center justify-center py-16 text-[#888]">
+            <div className="loading-state flex flex-col items-center justify-center py-16 text-[#888] text-center px-4">
               <div className="pulse-spinner w-8 h-8 rounded-full border-2 border-[#c5a77a] border-t-transparent animate-spin mb-4" />
               <p className="text-xs">🌐 Searching the internet live for &quot;{query || 'automotive catalog'}&quot; across {selectedState}...</p>
+              {slowLoading && (
+                <p className="text-[11px] text-[#c5a77a] mt-2 animate-pulse">
+                  ⚡ Connecting to cloud backend on Render (waking up free server instance, please wait a moment)...
+                </p>
+              )}
             </div>
           )}
 

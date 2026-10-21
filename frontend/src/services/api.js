@@ -85,9 +85,10 @@ export async function searchUniversal(query = '', type = 'all', state = 'all', s
     if (sort) params.append('sort', sort);
 
     const res = await fetch(`${API_BASE}/search/?${params.toString()}`);
-    if (!res.ok) throw new Error('Search failed');
+    if (!res.ok) throw new Error(`Search failed with HTTP ${res.status}`);
     return await res.json();
   } catch (err) {
+    console.warn('[Aurel API] Online search request failed, using local catalog fallback:', err);
     // Offline local universal search
     const q = query.toLowerCase().trim();
     const isAllIndia = !state || state.toLowerCase() === 'all india' || state.toLowerCase() === 'all';
