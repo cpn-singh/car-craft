@@ -16,6 +16,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://*.b4a.run',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+
 # Custom User Model
 AUTH_USER_MODEL = 'dms.User'
 
